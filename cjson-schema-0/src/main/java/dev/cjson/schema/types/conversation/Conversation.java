@@ -24,8 +24,8 @@ import java.util.Map;
         or any other identifier that makes sense during the export process. Another example is the "metadata" field, where it might not make sense to export "application-specific"
         metadata that only makes sense to that specific application.
         
-        Conversation data that is essential to the conversation, and in general "user owned", SHOULD BE exported as verbatim as possible, for example, the conversation title and the
-        message contents.
+        Conversation data that is essential to the conversation, and in general "user owned", SHOULD BE exported as verbatim as possible, for example, the conversation title 
+        and the message contents.
         """)
 public record Conversation(
         @Schema(defaultValue = "https://cjson.dev/schema/0.1.0/conversation/cjson-0.1.0.json")
@@ -36,8 +36,6 @@ public record Conversation(
 
         @Schema(description = "The unique identifier for this conversation inside the application. UUIDs/ULIDs are recommended but not enforced.")
         @NotNull String id,
-
-        ContentBlock tb,
 
         @Schema(description = """
                 The title of the conversation. This is not required and can be left blank.

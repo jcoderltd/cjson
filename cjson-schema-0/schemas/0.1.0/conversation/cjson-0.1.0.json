@@ -25,20 +25,7 @@
       },
       "required" : [ "action", "actorId", "timestamp" ]
     },
-    "ContentBlock" : {
-      "anyOf" : [ {
-        "$ref" : "#/$defs/TextBlock"
-      }, {
-        "$ref" : "#/$defs/ToolCallBlock"
-      }, {
-        "$ref" : "#/$defs/ToolApprovalBlock"
-      }, {
-        "$ref" : "#/$defs/ToolResultBlock"
-      }, {
-        "$ref" : "#/$defs/ThinkingBlock"
-      } ]
-    },
-    "Message" : {
+    "CompositeMessage" : {
       "type" : "object",
       "properties" : {
         "assistantMetadata" : {
@@ -51,49 +38,7 @@
           "description" : "The list of attachments that are associated with the message.\n\nThese are not treated as content blocks and SHOULD BE separate from content blocks. These SHOULD BE treated as additional context to\na model.\n\nHopefully, in a not so distant future, LLM APIs will accept parameters (like SQL Parameters) that help us prevent context injection\n(https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html).\n",
           "type" : "array",
           "items" : {
-            "type" : "object",
-            "properties" : {
-              "attachmentKind" : {
-                "type" : "string",
-                "enum" : [ "file", "image", "audio", "video", "link", "other" ],
-                "description" : "The kind of attachment (file/image/audio/video/link/other)."
-              },
-              "base64content" : {
-                "type" : "string",
-                "description" : "The base64 encoded content of the attachment. SHOULD BE provided if uri is not provided."
-              },
-              "id" : {
-                "type" : "string",
-                "description" : "The unique identifier for this attachment inside the conversation. UUIDs/ULIDs are recommended but not enforced."
-              },
-              "metadata" : {
-                "type" : "object",
-                "additionalProperties" : true,
-                "description" : "Metadata that can be used to store any additional information about the attachment.",
-                "existingJavaType" : "java.util.Map<java.lang.String, java.lang.Object>"
-              },
-              "mime" : {
-                "type" : "string",
-                "description" : "The mime type of the attachment."
-              },
-              "name" : {
-                "type" : "string",
-                "description" : "The name of the attachment. Unique names aren't required, although are recommended inside a message\nto avoid confusions.\n"
-              },
-              "sha256" : {
-                "type" : "string",
-                "description" : "The SHA-256 hash of the attachment content."
-              },
-              "sizeInBytes" : {
-                "type" : "integer",
-                "description" : "The size of the attachment in bytes."
-              },
-              "uri" : {
-                "type" : "string",
-                "description" : "The URI of the attachment. SHOULD BE provided if base64content is not provided directly."
-              }
-            },
-            "required" : [ "attachmentKind", "id", "name" ]
+            "$ref" : "#/$defs/MessageAttachment"
           }
         },
         "auditTrail" : {
@@ -139,17 +84,88 @@
           "description" : "Used to mark messages that are pinned by users as a sign of relevance. Useful for bookmarking."
         },
         "role" : {
-          "type" : "string",
-          "enum" : [ "user", "assistant" ],
+          "$ref" : "#/$defs/MessageRole",
           "description" : "The role of the message in the conversation.\n\nDifferent providers handle this differently, however, there appears to be a recommended practice of consolidating\nall system/developer messages into a single initial message in the conversation.\n\nAs such, for \"system/developer\" messages, see the `Conversation::systemMessage` field.\n"
         },
         "senderId" : {
           "type" : "string",
           "description" : "The id of the user that sent the message. This is specific to messages with \"user\" role."
+        },
+        "messageType" : {
+          "const" : "composite"
         }
       },
-      "required" : [ "id", "role" ],
-      "description" : "A Message is the building unit inside a Conversation.\n\nMessages are composed of one or more \"ContentBlocks\". In general, although not mandatory, only \"assistant\"-role messages have more than\none \"ContentBlock\" to include/express different steps the model has taken, including, thinking blocks, tool execution requests and\nsubsequent responses after a tool has been executed.\n\nIn the same lines, in general, although not mandatory, \"user\"-role messages will have a single \"TextBlock\" that includes the text message\nprovided by the user. User messages are the ones that tend to include \"attachments\" (like audio/image files), however, applications can also\nuse attachments in \"assistant\"-role messages (for example, if the LLM generated an image, an application might want to include it as an\nattachment).\n"
+      "required" : [ "id", "role", "messageType" ],
+      "description" : "A Message is the building unit inside a Conversation.\n\nCompositeMessages are composed of one or more \"ContentBlocks\". In general, although not mandatory, only \"assistant\"-role messages have\nmore than one \"ContentBlock\" to include/express different steps the model has taken, including, thinking blocks, tool execution requests and\nsubsequent responses after a tool has been executed.\n\nIn the same lines, in general, although not mandatory, \"user\"-role messages will have a single \"TextBlock\" that includes the text message\nprovided by the user. User messages are the ones that tend to include \"attachments\" (like audio/image files), however, applications can also\nuse attachments in \"assistant\"-role messages (for example, if the LLM generated an image, an application might want to include it as an\nattachment).\n"
+    },
+    "ContentBlock" : {
+      "anyOf" : [ {
+        "$ref" : "#/$defs/TextBlock"
+      }, {
+        "$ref" : "#/$defs/ToolCallBlock"
+      }, {
+        "$ref" : "#/$defs/ToolApprovalBlock"
+      }, {
+        "$ref" : "#/$defs/ToolResultBlock"
+      }, {
+        "$ref" : "#/$defs/ThinkingBlock"
+      } ]
+    },
+    "Message" : {
+      "anyOf" : [ {
+        "$ref" : "#/$defs/CompositeMessage"
+      }, {
+        "$ref" : "#/$defs/TextMessage"
+      } ]
+    },
+    "MessageAttachment" : {
+      "type" : "object",
+      "properties" : {
+        "attachmentKind" : {
+          "type" : "string",
+          "enum" : [ "file", "image", "audio", "video", "link", "other" ],
+          "description" : "The kind of attachment (file/image/audio/video/link/other)."
+        },
+        "base64content" : {
+          "type" : "string",
+          "description" : "The base64 encoded content of the attachment. SHOULD BE provided if uri is not provided."
+        },
+        "id" : {
+          "type" : "string",
+          "description" : "The unique identifier for this attachment inside the conversation. UUIDs/ULIDs are recommended but not enforced."
+        },
+        "metadata" : {
+          "type" : "object",
+          "additionalProperties" : true,
+          "description" : "Metadata that can be used to store any additional information about the attachment.",
+          "existingJavaType" : "java.util.Map<java.lang.String, java.lang.Object>"
+        },
+        "mime" : {
+          "type" : "string",
+          "description" : "The mime type of the attachment."
+        },
+        "name" : {
+          "type" : "string",
+          "description" : "The name of the attachment. Unique names aren't required, although are recommended inside a message\nto avoid confusions.\n"
+        },
+        "sha256" : {
+          "type" : "string",
+          "description" : "The SHA-256 hash of the attachment content."
+        },
+        "sizeInBytes" : {
+          "type" : "integer",
+          "description" : "The size of the attachment in bytes."
+        },
+        "uri" : {
+          "type" : "string",
+          "description" : "The URI of the attachment. SHOULD BE provided if base64content is not provided directly."
+        }
+      },
+      "required" : [ "attachmentKind", "id", "name" ]
+    },
+    "MessageRole" : {
+      "type" : "string",
+      "enum" : [ "user", "assistant", "tool" ]
     },
     "TextBlock" : {
       "type" : "object",
@@ -179,6 +195,76 @@
         }
       },
       "required" : [ "createdAt", "id", "text", "blockType" ]
+    },
+    "TextMessage" : {
+      "type" : "object",
+      "properties" : {
+        "assistantMetadata" : {
+          "type" : "object",
+          "additionalProperties" : true,
+          "description" : "Optional metadata about the execution of the LLM/assistant model. Examples of what to add here: the model name, cost, number of input/output tokens, etc.\n\nA more typed version of this metadata will be more formally defined in future versions.\n",
+          "existingJavaType" : "java.util.Map<java.lang.String, java.lang.Object>"
+        },
+        "attachments" : {
+          "description" : "The list of attachments that are associated with the message.\n\nThese are not treated as content blocks and SHOULD BE separate from content blocks. These SHOULD BE treated as additional context to\na model.\n\nHopefully, in a not so distant future, LLM APIs will accept parameters (like SQL Parameters) that help us prevent context injection\n(https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html).\n",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/$defs/MessageAttachment"
+          }
+        },
+        "auditTrail" : {
+          "description" : "An optional audit trail that shows when the message was created or modified.\n\nThe first entry in an audit trail SHOULD BE the CREATED operation.\n",
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/$defs/AuditEntry"
+          }
+        },
+        "content" : {
+          "type" : "string",
+          "description" : "The text content of the message."
+        },
+        "extensions" : {
+          "type" : "object",
+          "additionalProperties" : true,
+          "description" : "Extensions can be used to add custom application-specific data to the message.\n\nExtensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.\n",
+          "existingJavaType" : "java.util.Map<java.lang.String, java.lang.Object>"
+        },
+        "id" : {
+          "type" : "string",
+          "description" : "The unique identifier for this message inside the application. UUIDs/ULIDs are recommended but not enforced."
+        },
+        "index" : {
+          "type" : "integer",
+          "description" : "The index of the message in the conversation.\n\nThe index is optional as the order of the messages in the array can be understood/implied as the index.\n\nHowever, when a message in the conversation is \"retried\", for example, if the user wants a second take from the LLM,\nthen the index will become an useful indicator that two or more messages are meant to be displayed on the same position\nin the conversation.\n"
+        },
+        "isPreferred" : {
+          "type" : "boolean",
+          "description" : "Whether the message is the preferred option to display when multiple messages share the same index in a conversation.\n\nIn general, this field has no effect if the message doesn't have an index and doesn't share the same index with other messages.\n"
+        },
+        "metadata" : {
+          "type" : "object",
+          "additionalProperties" : true,
+          "description" : "Metadata that can be used to store any additional information about the message.",
+          "existingJavaType" : "java.util.Map<java.lang.String, java.lang.Object>"
+        },
+        "pinned" : {
+          "type" : "boolean",
+          "description" : "Used to mark messages that are pinned by users as a sign of relevance. Useful for bookmarking."
+        },
+        "role" : {
+          "$ref" : "#/$defs/MessageRole",
+          "description" : "The role of the message in the conversation.\n\nDifferent providers handle this differently, however, there appears to be a recommended practice of consolidating\nall system/developer messages into a single initial message in the conversation.\n\nAs such, for \"system/developer\" messages, see the `Conversation::systemMessage` field.\n"
+        },
+        "senderId" : {
+          "type" : "string",
+          "description" : "The id of the user that sent the message. This is specific to messages with \"user\" role."
+        },
+        "messageType" : {
+          "const" : "text"
+        }
+      },
+      "required" : [ "id", "role", "messageType" ],
+      "description" : "A Message is the building unit inside a Conversation.\n\nTextMessages represent the most basic type of message in a conversation, represented by a block of text. They are\nequivalent to a CompositeMessage that contains a single TextBlock inside of it.\n"
     },
     "ThinkingBlock" : {
       "type" : "object",
@@ -416,9 +502,6 @@
       "type" : "string",
       "description" : "This represents the initial \"system\"/\"developer\" message in a conversation.\n\nDifferent providers handle the system/developer message differently. Applications MUST include this system message according to\nthe expectations of the model being invoked if the application supports given model.\n\nRefs/examples:\n* https://platform.openai.com/docs/guides/text?prompt-templates-examples=simple#message-roles-and-instruction-following\n* https://docs.anthropic.com/en/api/messages\n"
     },
-    "tb" : {
-      "$ref" : "#/$defs/ContentBlock"
-    },
     "toolOverrides" : {
       "type" : "object",
       "properties" : {
@@ -446,5 +529,5 @@
   },
   "required" : [ "id", "schemaUrl" ],
   "title" : "Conversation",
-  "description" : "A conversation between an actor and a model, typically a User <-> LLM conversation.\n\nThe list of messages in the conversation should represent the \"Conversation History\" and it is not intended to represent the \"Conversation Memory\" for an LLM.\nIn this sense, think of the specification as a standard way to store \"what the user sees\" from a Conversation and think about what will help with the UI/UX for\nyour particular application.\n\nMany aspects of the specification are optional and can be used/discarded depending on the needs/requirements of each application. For example, audit trails,\nalthough recommended, are not mandatory in the specification.\n\nIt is NOT the intention of this specification to be a \"Memory Format\" representation.\n\nConversation data for \"internal-usage\" inside an application can, and SHOULD BE, different from the data used for export purposes.\n\nFor example, the ownerId can be an actual identifier inside an application, but during export, it can be the user email, a secure one-way hash of the user identifier,\nor any other identifier that makes sense during the export process. Another example is the \"metadata\" field, where it might not make sense to export \"application-specific\"\nmetadata that only makes sense to that specific application.\n\nConversation data that is essential to the conversation, and in general \"user owned\", SHOULD BE exported as verbatim as possible, for example, the conversation title and the\nmessage contents.\n"
+  "description" : "A conversation between an actor and a model, typically a User <-> LLM conversation.\n\nThe list of messages in the conversation should represent the \"Conversation History\" and it is not intended to represent the \"Conversation Memory\" for an LLM.\nIn this sense, think of the specification as a standard way to store \"what the user sees\" from a Conversation and think about what will help with the UI/UX for\nyour particular application.\n\nMany aspects of the specification are optional and can be used/discarded depending on the needs/requirements of each application. For example, audit trails,\nalthough recommended, are not mandatory in the specification.\n\nIt is NOT the intention of this specification to be a \"Memory Format\" representation.\n\nConversation data for \"internal-usage\" inside an application can, and SHOULD BE, different from the data used for export purposes.\n\nFor example, the ownerId can be an actual identifier inside an application, but during export, it can be the user email, a secure one-way hash of the user identifier,\nor any other identifier that makes sense during the export process. Another example is the \"metadata\" field, where it might not make sense to export \"application-specific\"\nmetadata that only makes sense to that specific application.\n\nConversation data that is essential to the conversation, and in general \"user owned\", SHOULD BE exported as verbatim as possible, for example, the conversation title\nand the message contents.\n"
 }

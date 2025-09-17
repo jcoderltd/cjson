@@ -3,9 +3,8 @@ package dev.cjson.examples.schema0;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.networknt.schema.*;
-import dev.cjson.models.conversation.Conversation;
-import dev.cjson.models.conversation.Message;
-import dev.cjson.models.conversation.TextBlock;
+import dev.cjson.models.conversation.*;
+import dev.cjson.models.conversation.CompositeMessage.MessageRole;
 import dev.cjson.models.models.ModelDefinition;
 import dev.cjson.models.models.Models;
 
@@ -58,16 +57,12 @@ public class Example {
         var messages = new ArrayList<Message>();
         conversation.withMessages(messages);
 
-        var userMessage = new Message().withId(newStringUUID()).withRole(Message.Role.USER);
-        userMessage.withContentBlocks(List.of(
-                new TextBlock().withId(newStringUUID())
-                        .withCreatedAt(LocalDateTime.now())
-                        .withText("""
-                                Help me explain this schema!!!""")
-        ));
+        var userMessage = new TextMessage().withId(newStringUUID()).withRole(MessageRole.USER);
+        userMessage.withContent("""
+                Help me explain this schema!!!""");
         messages.add(userMessage);
 
-        var assistantMessage = new Message().withId(newStringUUID()).withRole(Message.Role.ASSISTANT);
+        var assistantMessage = new CompositeMessage().withId(newStringUUID()).withRole(MessageRole.ASSISTANT);
         assistantMessage.withContentBlocks(List.of(
                 new TextBlock().withId(newStringUUID())
                         .withCreatedAt(LocalDateTime.now())

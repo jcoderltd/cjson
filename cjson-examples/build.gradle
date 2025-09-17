@@ -29,6 +29,6 @@ jsonSchema2Pojo {
     formatDates = true
     formatTimes = true
     customDateTimePattern = "yyyy-MM-dd HH:mm:ss.SSS"
-    customRuleFactory = 'dev.cjson.codegen.ContentBlockRuleFactory'
+    customRuleFactory = 'dev.cjson.codegen.CJSONAnyOfRuleFactory'
     includeAdditionalProperties = false
 }

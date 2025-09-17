@@ -1,24 +1,20 @@
 package dev.cjson.codegen;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.codemodel.*;
-import org.apache.commons.lang.StringUtils;
 import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.JsonPointerUtils;
 import org.jsonschema2pojo.Schema;
 import org.jsonschema2pojo.rules.*;
 import org.jsonschema2pojo.util.ParcelableHelper;
 
 import java.util.List;
 
-public class ContentBlockRuleFactory extends RuleFactory {
+public class CJSONAnyOfRuleFactory extends RuleFactory {
 
     @Override
     public Rule<JPackage, JClass> getArrayRule() {
-        return new ContentBlockArrayRule(this);
+        return new CJSONAnyOfArrayRule(this);
     }
 
     @Override
@@ -48,10 +44,31 @@ public class ContentBlockRuleFactory extends RuleFactory {
         return iface;
     }
 
+    JClass ensureMessageInterface(JPackage basePkg, GenerationConfig cfg) {
+        String pkgName = ((cfg.getTargetPackage() != null && !cfg.getTargetPackage().isEmpty())
+                ? cfg.getTargetPackage() : basePkg.name()) + ".conversation";
+        JCodeModel cm = basePkg.owner();
+        JPackage p = cm._package(pkgName);
+        JDefinedClass iface;
+        try {
+            iface = p._interface("Message");
+            iface.javadoc().add("Marker interface for all message types.");
+        } catch (IllegalArgumentException | JClassAlreadyExistsException e) {
+            iface = p._getClass("Message");
+        }
+        return iface;
+    }
+
     static final List<String> CONTENT_BLOCK_NAMES = List.of("TextBlock", "ThinkingBlock", "ToolApprovalBlock", "ToolCallBlock", "ToolResultBlock");
+
+    static final List<String> MESSAGE_NAMES = List.of("CompositeMessage", "TextMessage");
 
     static boolean isBlockLike(String simpleName) {
         return CONTENT_BLOCK_NAMES.contains(simpleName);
+    }
+
+    static boolean isMessageLike(String simpleName) {
+        return MESSAGE_NAMES.contains(simpleName);
     }
 
     static String simpleNameFromRef(String ref) {
@@ -85,9 +102,13 @@ public class ContentBlockRuleFactory extends RuleFactory {
             JType jt = super.apply(nodeName, node, parent, jpackage, schema);
 
             if (jt instanceof JDefinedClass cls) {
-                if (ContentBlockRuleFactory.isBlockLike(cls.name())) {
-                    JClass cb = ((ContentBlockRuleFactory) rf)
-                            .ensureContentBlockInterface(jpackage, rf.getGenerationConfig());
+                CJSONAnyOfRuleFactory ruleFactory = (CJSONAnyOfRuleFactory) rf;
+                if (isBlockLike(cls.name())) {
+                    JClass cb = ruleFactory.ensureContentBlockInterface(jpackage, rf.getGenerationConfig());
+                    cls._implements(cb);
+                }
+                if (isMessageLike(cls.name())) {
+                    JClass cb = ruleFactory.ensureMessageInterface(jpackage, rf.getGenerationConfig());
                     cls._implements(cb);
                 }
             }
@@ -98,10 +119,10 @@ public class ContentBlockRuleFactory extends RuleFactory {
     /**
      * Generates branch classes and types contentBlocks as List<ContentBlock>.
      */
-    static class ContentBlockArrayRule extends ArrayRule {
+    static class CJSONAnyOfArrayRule extends ArrayRule {
         private final RuleFactory rf;
 
-        ContentBlockArrayRule(RuleFactory rf) {
+        CJSONAnyOfArrayRule(RuleFactory rf) {
             super(rf);
             this.rf = rf;
         }
@@ -111,23 +132,24 @@ public class ContentBlockRuleFactory extends RuleFactory {
             // 1) Traverse normally so nested refs are visited
             JClass original = super.apply(nodeName, node, parent, jpackage, schema);
 
-            // 2) We're only interested in the contentBlocks node
-            if (!"contentBlocks".equals(nodeName)) {
+            // 2) We're only interested in the contentBlocks and messages nodes
+            if (!"contentBlocks".equals(nodeName) && !"messages".equals(nodeName)) {
                 return original;
             }
 
-            // 2a) If items is a $ref to #/$defs/ContentBlock, force-generate all branches
+            // 2a) If items is a $ref to #/$defs/ContentBlock or #/$defs/Message, force-generate all branches
             JsonNode items = node.get("items");
             if (items != null) {
                 JsonNode refNode = items.get("$ref");
                 if (refNode != null && refNode.isTextual()) {
-                    String ref = refNode.asText(); // expect "#/$defs/ContentBlock"
-                    if (ref.endsWith("/ContentBlock")) {
+                    String ref = refNode.asText(); // expect "#/$defs/ContentBlock" or "#/$defs/Message"
+                    if (ref.endsWith("/ContentBlock") || ref.endsWith("/Message")) {
                         // Find the union in the root schema
-                        JsonNode root = ContentBlockRuleFactory.rootOf(schema).getContent();
+                        var refName = ref.substring(ref.lastIndexOf('/') + 1);
+                        JsonNode root = CJSONAnyOfRuleFactory.rootOf(schema).getContent();
                         JsonNode defs = root.get("$defs");
                         if (defs != null) {
-                            JsonNode cbDef = defs.get("ContentBlock");
+                            JsonNode cbDef = defs.get(refName);
                             if (cbDef != null) {
                                 JsonNode union = cbDef.has("oneOf") ? cbDef.get("oneOf") : cbDef.get("anyOf");
                                 if (union != null && union.isArray()) {
@@ -135,7 +157,7 @@ public class ContentBlockRuleFactory extends RuleFactory {
                                         JsonNode branchRef = element.get("$ref");
                                         if (branchRef != null && branchRef.isTextual()) {
                                             String branch = branchRef.asText(); // e.g. "#/$defs/TextBlock"
-                                            String simple = ContentBlockRuleFactory.simpleNameFromRef(branch);
+                                            String simple = CJSONAnyOfRuleFactory.simpleNameFromRef(branch);
                                             // Ask SchemaRule to generate the referenced element
                                             rf.getSchemaRule().apply(simple, element, parent, jpackage, schema);
 
@@ -152,7 +174,12 @@ public class ContentBlockRuleFactory extends RuleFactory {
             GenerationConfig cfg = rf.getGenerationConfig();
             JCodeModel cm = jpackage.owner();
             JClass list = cm.ref(java.util.List.class);
-            JClass cb = ((ContentBlockRuleFactory) rf).ensureContentBlockInterface(jpackage, cfg);
+            JClass cb;
+            if ("contentBlocks".equals(nodeName)) {
+                cb = ((CJSONAnyOfRuleFactory) rf).ensureContentBlockInterface(jpackage, cfg);
+            } else {
+                cb = ((CJSONAnyOfRuleFactory) rf).ensureMessageInterface(jpackage, cfg);
+            }
             return list.narrow(cb);
         }
     }
@@ -165,7 +192,7 @@ public class ContentBlockRuleFactory extends RuleFactory {
 
         @Override
         public JDefinedClass apply(String nodeName, JsonNode node, JsonNode parent, JDefinedClass jclass, Schema schema) {
-            if (nodeName.equals("blockType")) {
+            if (nodeName.equals("blockType") || nodeName.equals("messageType")) {
                 var c = node.get("const");
                 if (c == null) {
                     return super.apply(nodeName, node, parent, jclass, schema);
