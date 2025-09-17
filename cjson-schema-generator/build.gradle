@@ -1,0 +1,24 @@
+plugins {
+    id 'application'
+
+}
+
+dependencies {
+    implementation 'com.github.victools:jsonschema-generator:4.38.0'
+    implementation 'com.github.victools:jsonschema-module-jackson:4.38.0'
+    implementation 'com.github.victools:jsonschema-module-jakarta-validation:4.38.0'
+    implementation 'com.github.victools:jsonschema-module-swagger-2:4.38.0'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.18.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.18.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3'
+
+    implementation 'de.huxhorn.sulky:de.huxhorn.sulky.ulid:8.3.0'
+
+    implementation project(":cjson-schema-0")
+}
+
+application {
+    mainClass = 'dev.cjson.schema.generator.CJSONSchemaGenerator'
+}

@@ -1,0 +1,2 @@
+rootProject.name = 'cjson'
+include 'cjson-schema-0', 'cjson-schema-generator', 'cjson-examples'

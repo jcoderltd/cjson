@@ -1,0 +1,68 @@
+{
+  "$schema" : "https://json-schema.org/draft/2020-12/schema",
+  "type" : "object",
+  "properties" : {
+    "mediaType" : {
+      "type" : "string",
+      "default" : "application/vnd.cjson-models+json"
+    },
+    "modelDefinitions" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "properties" : {
+          "apiKeyEnvironment" : {
+            "type" : "string",
+            "description" : "The name of the environment variable name that contains the API key for this model/integration.\n"
+          },
+          "baseUrl" : {
+            "type" : "string",
+            "description" : "Optional url to be used to send requests to this model.\n\nThe URL is optional as certain integrations with some model providers already add a default URL.\n"
+          },
+          "disabled" : {
+            "type" : "boolean",
+            "description" : "Indicates if the model is disabled. This value is false by default.\n\nDisabled models SHOULD NOT be allowed to be used/selected in the application.\n"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "extensions" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Extensions can be used to add custom application-specific data to the model definition.\n\nExtensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.\n",
+            "existingJavaType" : "java.util.Map<java.lang.String, java.lang.Object>"
+          },
+          "headers" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "Additional headers to be included in the HTTP requests to the model.\n\nApplications are encouraged, although not enforced, to support environment variable injection into the\nheader values and other injection mechanisms that allow for secret passing.\n\nAs an example, a \"token\" header with a \"${env:MODEL_TOKEN}\" would inject the value of the environment\nvariable \"MODEL_TOKEN\" into the \"token\" header.\n\nApplications MUST NOT store plain-text credentials here and should use references to secret stores\nor environment variable names.\n\nFor secret referencing, we recommend a \"${secret:SECRET_NAME}\" that is similar to the \"env\" case, but\nis up to the application to decide where they fetch the secrets from.\n",
+            "existingJavaType" : "java.util.Map<java.lang.String, java.lang.String>"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "modelName" : {
+            "type" : "string"
+          },
+          "parameters" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "existingJavaType" : "java.util.Map<java.lang.String, java.lang.String>"
+          },
+          "provider" : {
+            "type" : "string",
+            "description" : "The name of the provider of the model.\n\nThe 'provider' is not standard due to:\n* new providers that can appear at any time and existent providers that can change.\n* different applications using different ways of naming the providers.\n\nWe recommend, but don't enforce, the use of the uppercase name of the organization/tool that provides it,\nwith underscore as whitespace replacement, for example: \"OPEN_AI\", \"ANTHROPIC\", \"OLLAMA\", \"LM_STUDIO\".\n\nApplications are free to decide the models they integrate/offer to their users.\n"
+          }
+        },
+        "required" : [ "id", "modelName", "provider" ]
+      }
+    },
+    "schemaUrl" : {
+      "type" : "string",
+      "default" : "https://cjson.dev/schema/0.1.0/models/cjson-models.0.1.0.json"
+    }
+  },
+  "required" : [ "schemaUrl" ],
+  "title" : "Models",
+  "description" : "A list of model definitions defined/enabled by the user.\n"
+}
