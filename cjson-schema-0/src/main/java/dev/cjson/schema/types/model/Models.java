@@ -9,7 +9,7 @@ import java.util.List;
         A list of model definitions defined/enabled by the user.
         """)
 public record Models(
-        @Schema(defaultValue = "https://cjson.dev/schema/0.1.0/models/cjson-models.0.1.0.json")
+        @Schema(defaultValue = "https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json")
         @NotNull String schemaUrl,
 
         @Schema(defaultValue = "application/vnd.cjson-models+json")

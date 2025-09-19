@@ -28,7 +28,7 @@ import java.util.Map;
         and the message contents.
         """)
 public record Conversation(
-        @Schema(defaultValue = "https://cjson.dev/schema/0.1.0/conversation/cjson-0.1.0.json")
+        @Schema(defaultValue = "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json")
         @NotNull String schemaUrl,
 
         @Schema(defaultValue = "application/vnd.cjson+json")

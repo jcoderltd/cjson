@@ -59,10 +59,11 @@
     },
     "schemaUrl" : {
       "type" : "string",
-      "default" : "https://cjson.dev/schema/0.1.0/models/cjson-models.0.1.0.json"
+      "default" : "https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json"
     }
   },
   "required" : [ "schemaUrl" ],
+  "$id" : "https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json",
   "title" : "Models",
   "description" : "A list of model definitions defined/enabled by the user.\n"
 }

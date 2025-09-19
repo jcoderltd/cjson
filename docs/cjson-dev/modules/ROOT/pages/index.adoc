@@ -1,0 +1,79 @@
+= CJSON: Conversation JSON
+:page-layout: home
+:page-role: landing
+
+[.hero]
+== Own Your Conversations
+
+CJSON (**Conversation JSON**) is an open standard for portable conversation data across AI tools/applications.
+
+With CJSON, you can:
+
+* Build editors, analyzers, and visualizers on top of a shared format.
+* Move your conversations between tools and providers without lock-in.
+* Ensure long-term ownership of your data.
+
+[.cta-buttons]
+* xref:spec:index.adoc[Read the Specification]
+* xref:guides:getting-started.adoc[Get Started]
+* https://github.com/jcoderltd/cjson[View on GitHub]
+
+'''
+
+== What is CJSON?
+
+CJSON defines a structured, vendor-neutral JSON schema for conversation data.
+It includes:
+
+* **Messages** – text, media, tool calls, results.
+* **Metadata** – timestamps, participants, context.
+* **Streaming & patches** – optional support for incremental updates.
+
+[.example]
+.A two-message example
+[source,json]
+----
+{
+  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "conversationTitle": "Example Conversation",
+  "id": "67589b87-e703-47db-8900-7533bad5465d",
+  "mediaType": "application/vnd.cjson+json",
+  "systemMessage": "You are an expert in helping solve problems.",
+  "messages": [ {
+    "id": "3355200c-cd27-4f81-96c9-7eaa96628f77",
+    "role": "user",
+    "messageType": "text",
+    "content": "What is CJSON?"
+  }, {
+    "id": "5ae2a633-586e-4b0c-b6e6-25551728811c",
+    "role": "assistant",
+    "messageType": "composite",
+    "contentBlocks": [ {
+      "createdAt": "2025-09-18 15:01:19.950",
+      "id": "830526cb-585a-4c39-8018-24830c5fd9cf",
+      "text": "CJSON is an open standard for conversational data. It's a open JSON Schema.",
+      "blockType": "text"
+    } ]
+  } ],
+  "modelId": "8543f7f8-b260-4c76-b102-869096e5a4e0"
+}
+----
+
+'''
+
+== Why CJSON?
+
+I've been developing AI tools as a hobby-project, and everytime I'd face the same set of questions around the data modeling for the conversation data.
+
+In general, many AI tools that allow users to create chats/conversations with AI models tend to share a similar subset of elements: from the definition of the models the user wants to use/connect to, the way the conversations are presented to the user, and the definition of the tools (MCP or not) that the user wants to provide to the models.
+
+I wanted to have a model that would allow developers to build on-top of a shared standard and that would be portable and transparent. And wanted to be able to see my conversation data in both a web interface and an IDE – there is no reason this shouldn't be possible! Except that, I can't easily export my conversation data from one tool to the other 😅 (at least, not yet!).
+
+CJSON started from all of the above.
+
+It's in early versions. Input from other use cases or even from using it is more than welcome such that, with time, it can grow into a more robust and complete spec.
+
+[.cards]
+* **Portability** :: Export/import your conversations with ease.
+* **Transparency** :: Know exactly what data is stored and shared.
+* **Ecosystem** :: Build tools once, work with many providers.

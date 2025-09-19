@@ -24,8 +24,10 @@ public class Example {
         var model = models.getModelDefinitions().get(0);
         var conversation = createExampleConversation(model);
 
-        validate(conversation, "conversation/cjson-0.1.0.json");
-        validate(models, "models/cjson-models-0.1.0.json");
+        validate(conversation, "conversation/cjson-0.1.0.schema.json");
+        validate(models, "models/cjson-models-0.1.0.schema.json");
+        validate(createEmptyConversation(model), "conversation/cjson-0.1.0.schema.json");
+        validate(createMinimalEmptyConversation(), "conversation/cjson-0.1.0.schema.json");
 
         System.out.println("Validation successful");
     }
@@ -47,6 +49,22 @@ public class Example {
                 .withModelName("gpt-5-mini")
                 .withApiKeyEnvironment("OPEN_AI_KEY");
         return new Models().withModelDefinitions(List.of(model));
+    }
+
+    private static Conversation createEmptyConversation(ModelDefinition model) {
+        var conversation = new Conversation();
+        conversation.withId(newStringUUID()).withModelId(model.getId()).withConversationTitle("Example Conversation");
+        conversation.withSystemMessage("""
+                You are an expert in helping solve problems.""");
+        var messages = new ArrayList<Message>();
+        conversation.withMessages(messages);
+        return conversation;
+    }
+
+    private static Conversation createMinimalEmptyConversation() {
+        var conversation = new Conversation();
+        conversation.withId(newStringUUID());
+        return conversation;
     }
 
     private static Conversation createExampleConversation(ModelDefinition model) {
@@ -79,7 +97,7 @@ public class Example {
 
     private static JsonSchema loadSchema(String resourcePath) {
         var workingDir = Paths.get("").toAbsolutePath().toString().replace('\\', '/');
-        var schemasDir = "file:///" + workingDir + "/cjson-schema-0/schemas/0.1.0/";
+        var schemasDir = "file:///" + workingDir + "/cjson-schema-0/schemas/0/";
 
         JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012, builder ->
                 builder.schemaMappers(schemaMappers -> schemaMappers.mapPrefix("https://cjson.dev/", schemasDir))

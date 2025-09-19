@@ -14,7 +14,7 @@ dependencies {
 }
 
 jsonSchema2Pojo {
-    source = files("../cjson-schema-0/schemas/0.1.0")
+    source = files("../cjson-schema-0/schemas/0")
     targetDirectory = file("${layout.buildDirectory.get()}/generated-sources/cjson")
     targetPackage = 'dev.cjson.models'
     generateBuilders = true
@@ -31,4 +31,5 @@ jsonSchema2Pojo {
     customDateTimePattern = "yyyy-MM-dd HH:mm:ss.SSS"
     customRuleFactory = 'dev.cjson.codegen.CJSONAnyOfRuleFactory'
     includeAdditionalProperties = false
+    initializeCollections = false
 }

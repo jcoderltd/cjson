@@ -1,0 +1,19 @@
+site:
+  title: CJSON
+  url: https://cjson.dev
+  start_page: cjson::index.adoc
+content:
+  sources:
+    - url: .
+      branches: main
+      start_path: docs/cjson-dev
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+runtime:
+  fetch: true
+asciidoc:
+  attributes:
+    page-pagination: ''
+    kroki-server-url: https://kroki.io

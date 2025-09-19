@@ -1,0 +1,113 @@
+= CJSON Specification (v0.1.0 Draft)
+:page-layout: doc
+:sectnums:
+:toc: macro
+:toclevels: 3
+
+toc::[]
+
+== Scope and Purpose
+
+CJSON (**Conversation JSON**) defines a vendor-neutral JSON representation for conversational data so that users can export, import, and process conversations across tools and providers. Applications can use the representation for internal usage/storage of conversational data.
+
+The specification uses JSON Schema to define three main specs that are becoming common in applications that allow users to have a conversation with models from different LLM providers:
+
+* Conversation: The main spec covered by CJSON that defines a way to represent conversational data (a.k.a. `cjson`).
+* Models: An auxiliary spec that covers the definition of AI models that are used in conversations (a.k.a. `cjson-models`).
+* Toolsets: An auxiliary spec that covers the definition of tools that will be provided to the AI models during a conversation (a.k.a. `cjson-toolsets`).
+
+This document is **normative** unless stated otherwise.
+The key words **MUST**, **SHOULD**, and **MAY** are to be interpreted as described in RFC 2119.
+
+== Terminology
+
+*Conversation*:: A sequence of messages that represent turns between two or more actors and related metadata.
+*Message*:: The basic building block of a conversation.
+Messages represent the content of the conversation.
+*Content Block*:: A discrete unit inside a conversation (e.g., text, tool call, tool result).
+*Actor*:: A subject that sends (or owns) a message in a conversation.
+For example, a user or an LLM model.
+*Producer*:: Software/application that emits CJSON.
+*Consumer*:: Software/application that ingests CJSON.
+*Vendor*:: The owner/developer of a producer/consumer application.
+
+== Versioning
+
+The CJSON schema is versioned and published at stable URLs.
+
+* **Canonical ID**: Each schema file MUST include a `$id` pointing to its canonical URL.
+* **SemVer**: Backward-compatible additions increment the **minor** version; breaking changes increment the **major** version. Small non-breaking fixes increment the **patch** version.
+
+Example canonical locations:
+
+* `https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json`
+* `https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json`
+
+The URLs are built with the following structure in mind:
+
+`https://cjson.dev/schema/<MAJOR_VERSION>/<MODEL_TYPE>/<SPEC_NAME>-<VERSION>.schema.json`
+
+== Top-Level Structure
+
+A CJSON document MUST be a JSON object that contains the elements defined in the `cjson` schema.
+
+.Example of an empty conversation
+[source,json]
+----
+{
+  "id" : "af9b2b96-204d-41cd-8f35-d25483514996",
+  "conversationTitle" : "Example Conversation",
+  "systemMessage" : "You are an expert in helping solve problems.",
+  "messages" : [ ],
+  "modelId" : "0c87bd41-165e-4f9d-9027-88e2c2674126",
+  "schemaUrl" : "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "mediaType" : "application/vnd.cjson+json"
+}
+----
+
+== Ordering and Streaming
+
+* Producers SHOULD emit messages in creation order.
+* For streaming or incremental output, producers MAY update existent content blocks or messages.
+Consumers SHOULD be robust to out-of-order arrival if `createdAt` is present.
+Consumers MAY decide to join related content blocks together for UI/UX purposes.
+
+== Internationalization
+
+* All content SHOULD use UTF encoding compatible with the JSON specification.
+We recommend the default UTF-8.
+* Language hints MAY be attached via `meta.lang`.
+
+== Security and Privacy
+
+* PII SHOULD be redacted or minimized.
+Particularly, if a Producer allows data exporting, the Producer SHOULD take precautions to avoid including PII data and security keys in their exports.
+Users SHOULD be warned about potential risks during a data export.
+* Secret material (API keys, tokens) MUST NOT be serialized into any of the JSON specifications defined here.
+The specification provides mechanisms and suggestions for secret injection during application execution.
+This specification DOES NOT enforce a way of handling the secret injection.
+* Consider encryption at rest and access control for exported archives.
+
+== Conformance
+
+A *conformant producer* MUST output JSON that validates against the canonical schema for the declared version.
+A *conformant consumer* MUST validate input and reject or flag non-conforming documents.
+
+== Extensions
+
+Vendors MAY define extension fields under a namespaced key (e.g., `"vendorName:extensionName": { ... }`).
+
+We recommend, but not enforce, a reverse-domain name prefix for the extension key, for example, if a company uses the domain `"company.com"` and introduces an extension named `"externalSources"`, then the key for that extension would be: `"com.company:externalSources"`.
+
+Consumers ARE NOT required to handle extensions from other providers.
+Consumers MAY want to notify users about extensions that the application doesn't recognize.
+
+Extensions MUST NOT alter the semantics of core fields.
+
+== Change Process
+
+Proposals are submitted as **CJSON Improvement Proposals (CIPs)** and discussed openly.
+Approved changes are incorporated in scheduled future versions of the spec and schema.
+
+In many cases, for proposals that don't impact the core fields, we recommend the use of an extension first to have working examples of the change being applied.
+This helps clarify the use cases and also helps seeing how it should work which makes the decision process and discussion a lot easier.

@@ -1,0 +1,5 @@
+* xref:index.adoc[Home]
+* Specification
+** xref:spec:index.adoc[Overview]
+* Guides
+** xref:guides:getting-started.adoc[Getting Started]

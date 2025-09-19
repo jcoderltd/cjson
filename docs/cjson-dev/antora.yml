@@ -1,0 +1,7 @@
+name: cjson
+title: CJSON
+version: '0.1.0'
+display_version: '0.1.0-SNAPSHOT'
+prerelease: true
+nav:
+  - modules/ROOT/nav.adoc

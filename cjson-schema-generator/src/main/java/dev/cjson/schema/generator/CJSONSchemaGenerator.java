@@ -35,14 +35,23 @@ public class CJSONSchemaGenerator {
                 .with(new Swagger2Module())
                 .with(new CJSONModule());
 
+        cfg.forTypesInGeneral().withIdResolver(scope -> {
+            var rawCls = scope.getType().getErasedType();
+            return switch (rawCls.getSimpleName()) {
+                case "Conversation" -> "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json";
+                case "Models" -> "https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json";
+                case "Toolsets" -> "https://cjson.dev/schema/0/toolsets/cjson-toolsets.0.1.0.schema.json";
+                default -> null;
+            };
+        });
         SchemaGeneratorConfig config = cfg.build();
         var generator = new SchemaGenerator(config);
         var mapper = new ObjectMapper()
                 .registerModule(new Jdk8Module())
                 .registerModule(new JavaTimeModule());
 
-        String schemaPrefix = "../cjson-schema-0/schemas/" + Version.VERSION;
-        String schemaExt = Version.VERSION + ".json";
+        String schemaPrefix = "../cjson-schema-0/schemas/0";
+        String schemaExt = Version.VERSION + ".schema.json";
         write(generator, mapper, Toolsets.class, schemaPrefix + "/toolsets/cjson-toolsets-" + schemaExt);
         write(generator, mapper, Models.class, schemaPrefix + "/models/cjson-models-" + schemaExt);
         write(generator, mapper, Conversation.class, schemaPrefix + "/conversation/cjson-" + schemaExt);

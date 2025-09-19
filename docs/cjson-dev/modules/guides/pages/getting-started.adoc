@@ -1,0 +1,127 @@
+= Getting Started with CJSON
+:page-layout: guide
+:sectnums:
+:toc: macro
+
+toc::[]
+
+Welcome to the CJSON (**Conversation JSON**) standard!
+
+This guide shows examples of Conversations, from simple and empty Conversations, to more complex use cases.
+
+== Create a `Conversation`
+
+The main type inside CJSON is a `Conversation` and it defines several properties that you can use depending on the features of your application.
+
+CJSON's schema requires the following three properties as mandatory, so an empty conversation can be as simple as:
+
+[.example]
+.Minimal empty conversation
+[source,json]
+----
+{
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "mediaType": "application/vnd.cjson+json",
+  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json"
+}
+----
+
+== Add a title
+
+Conversations usually have a title that can be AI-generated or provided by the user.
+This title is defined via the `conversationTitle` property.
+
+[.example]
+.Empty conversation with a title
+[source,json]
+----
+{
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "conversationTitle": "Example Conversation",
+  "mediaType": "application/vnd.cjson+json",
+  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json"
+}
+----
+
+== Add a first User message
+
+Typically, conversations start with a message from a user.
+To represent a message, we can add it to the `messages` array of the conversation:
+
+[.example]
+.Conversation with a message
+[source,json]
+----
+{
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "conversationTitle": "Example Conversation",
+  "mediaType": "application/vnd.cjson+json",
+  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "messages": [ {
+    "id": "b52fb6eb-36e2-4cc4-a5d6-383bebf04c9d",
+    "content": "Can you help me explain this schema?",
+    "role": "user",
+    "messageType": "text"
+  } ]
+}
+----
+
+Messages can be of two different types, `text` messages that contain a single text content, and `composite` messages that can contain multiple `contentBlocks`, useful for model responses that include tool executions and multiple model text responses in a single message.
+
+[NOTE]
+====
+Messages of type `text` are a simplified version of a `composite` message.
+In essence, they can be seen as a `composite` message with a single `text` block.
+
+The `text` messages were added to the schema to facilitate simpler use cases and improve the Developer Experience.
+====
+
+== Add the response message from the model
+
+Once a user message is sent, the application will usually send it to the corresponding AI/LLM model.
+Once a response is received, a new message can be added to the conversation to represent that response:
+
+[.example]
+.Conversation with a user and an assistant message
+[source,json]
+----
+{
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "conversationTitle": "Example Conversation",
+  "mediaType": "application/vnd.cjson+json",
+  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "messages": [ {
+    "id": "b52fb6eb-36e2-4cc4-a5d6-383bebf04c9d",
+    "content": "Can you help me explain this schema?",
+    "role": "user",
+    "messageType": "text"
+  }, {
+    "id": "0eec30fd-f5ad-4cde-94e9-b29db4553cbe",
+    "contentBlocks": [ {
+      "id": "284ef440-bf4e-4548-923e-37bb78e52c93",
+      "createdAt": "2025-09-18 20:20:14.502",
+      "text": "CJSON is an open standard for portable conversation data",
+      "blockType": "text"
+    } ],
+    "role": "assistant",
+    "messageType": "composite"
+  } ]
+}
+----
+
+For the second message we decided to use a `composite` message to show the main differences between the two types we mentioned in the previous example.
+
+== Validate your JSON
+
+https://json-schema.org/tools?query=&sortBy=name&sortOrder=ascending&groupBy=toolingTypes&licenses=&languages=&drafts=2020-12&toolingTypes=validator&environments=&showObsolete=false&supportsBowtie=false[JSON Schema Validators] are available for several programming languages.
+
+We recommend the use of a validator to ensure your generated conversation JSON is conformant with the CJSON specification.
+
+== Build on Top
+
+Ideas for using CJSON:
+
+* Import/export conversations in your AI tool/application.
+* Create a viewer with search and filters.
+* Use the schema in your database for conversation storage.
+* Create new applications/IDE plugins/tools on top of the CJSON spec.
