@@ -15,7 +15,7 @@ jobs:
         with: { node-version: '20' }
       - run: npm i -g @antora/cli @antora/site-generator
       - run: antora antora-playbook.yml --stacktrace
-      - run: echo "cjson.dev" > build/site/CNAME
+      - run: echo "docs.cjson.dev" > build/site/CNAME
       - uses: actions/upload-pages-artifact@v3
         with: { path: build/site }
   deploy:
