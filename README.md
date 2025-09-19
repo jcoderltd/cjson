@@ -35,28 +35,14 @@ Schemas are published with stable canonical IDs and SemVer:
 
 General structure:
 
-https://cjson.dev/schema/<MAJOR>/<MODEL_TYPE>/<SPEC_NAME>-<VERSION>.schema.json
+```
+https://cjson.dev/schema/<MAJOR_VERSION>/<MODEL_TYPE>/<SPEC_NAME>-<VERSION>.schema.json
+```
 
 Versioning policy:
 - Backward-compatible additions → minor version bump
 - Breaking changes → major version bump
 - Small non‑breaking fixes → patch version
-
-
-## Quick Start for Developers
-
-Prerequisites: Java 17+ and Gradle.
-
-Build everything:
-
-- Windows (PowerShell): `./gradlew.bat build`
-- Linux/macOS: `./gradlew build`
-
-This compiles modules and produces schemas under cjson-schema-0/schemas/0.
-
-Run tests/examples:
-
-- `./gradlew.bat :cjson-tests:test` (or `./gradlew :cjson-tests:test`)
 
 
 ## CJSON Examples
@@ -83,6 +69,24 @@ You can build and publish the site with the Antora playbook (antora-playbook.yml
 ## Contributing
 
 We welcome ideas, feedback, and contributions. See CONTRIBUTE.md for guidelines. Changes to the specification should be proposed as CJSON Improvement Proposals (CIPs).
+
+
+## Quick Start for Developers of this repository
+
+If you're planning to contribute to this repo, this section is for you!
+
+Prerequisites: Java 24+.
+
+Build everything:
+
+- Windows (PowerShell): `./gradlew.bat build`
+- Linux/macOS: `./gradlew build`
+
+This compiles modules and produces schemas under cjson-schema-0/schemas/0.
+
+Run tests/examples:
+
+- `./gradlew.bat :cjson-tests:test` (or `./gradlew :cjson-tests:test`)
 
 
 ## License
