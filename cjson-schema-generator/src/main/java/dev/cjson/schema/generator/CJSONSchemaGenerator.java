@@ -38,9 +38,9 @@ public class CJSONSchemaGenerator {
         cfg.forTypesInGeneral().withIdResolver(scope -> {
             var rawCls = scope.getType().getErasedType();
             return switch (rawCls.getSimpleName()) {
-                case "Conversation" -> "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json";
-                case "Models" -> "https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json";
-                case "Toolsets" -> "https://cjson.dev/schema/0/toolsets/cjson-toolsets.0.1.0.schema.json";
+                case "Conversation" -> "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json";
+                case "Models" -> "https://schema.cjson.dev/0/models/cjson-models.0.1.0.schema.json";
+                case "Toolsets" -> "https://schema.cjson.dev/0/toolsets/cjson-toolsets.0.1.0.schema.json";
                 default -> null;
             };
         });

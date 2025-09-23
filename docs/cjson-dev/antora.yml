@@ -1,6 +1,6 @@
 name: cjson
 title: CJSON
-version: '0.1.0'
+version: '0.1.0-SNAPSHOT'
 display_version: '0.1.0-SNAPSHOT'
 prerelease: true
 nav:

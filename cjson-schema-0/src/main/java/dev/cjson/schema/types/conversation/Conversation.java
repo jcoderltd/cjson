@@ -1,5 +1,6 @@
 package dev.cjson.schema.types.conversation;
 
+import dev.cjson.schema.types.Version;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
@@ -28,7 +29,7 @@ import java.util.Map;
         and the message contents.
         """)
 public record Conversation(
-        @Schema(defaultValue = "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json")
+        @Schema(defaultValue = "https://schema.cjson.dev/0/conversation/cjson-" + Version.VERSION + ".schema.json")
         @NotNull String schemaUrl,
 
         @Schema(defaultValue = "application/vnd.cjson+json")

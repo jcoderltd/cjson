@@ -6,7 +6,7 @@ Purpose
 
 Specs in this repo (v0.1.0)
 - Conversation (aka cjson)
-  - Canonical URL ($id): https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json
+  - Canonical URL ($id): https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json
   - Required fields: id, schemaUrl
   - mediaType default: application/vnd.cjson+json
   - Messages can be:
@@ -14,18 +14,18 @@ Specs in this repo (v0.1.0)
     - CompositeMessage (messageType = "composite", with contentBlocks)
   - Content blocks include: text, thinking, toolCall, toolApproval, toolResult
 - Models (aka cjson-models)
-  - $id: https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json
+  - $id: https://schema.cjson.dev/0/models/cjson-models.0.1.0.schema.json
   - Required fields: schemaUrl; each modelDefinition requires id, modelName, provider
   - Secrets SHOULD NOT be embedded; use placeholders like ${env:VAR} or ${secret:NAME}
 - Toolsets (aka cjson-toolsets)
-  - $id: https://cjson.dev/schema/0/toolsets/cjson-toolsets.0.1.0.schema.json
+  - $id: https://schema.cjson.dev/0/toolsets/cjson-toolsets.0.1.0.schema.json
   - Required fields: schema (top-level), and for each toolset: id, kind; each tool requires name
 
 Minimal Conversation
 {
   "id": "af9b2b96-204d-41cd-8f35-d25483514996",
   "mediaType": "application/vnd.cjson+json",
-  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json"
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json"
 }
 
 Two-Message Conversation (user → assistant/composite)
@@ -33,7 +33,7 @@ Two-Message Conversation (user → assistant/composite)
   "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
   "conversationTitle": "Example Conversation",
   "mediaType": "application/vnd.cjson+json",
-  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json",
   "messages": [
     {
       "id": "b52fb6eb-36e2-4cc4-a5d6-383bebf04c9d",

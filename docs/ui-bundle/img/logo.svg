@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 24 24" role="img" aria-labelledby="titleR1 descR1">
+    <title id="titleR1">CJSON symbol (c inside braces)</title>
+    <desc id="descR1">Curly braces as container with a c inside</desc>
+    <defs>
+        <style>
+            .brace  { fill:#00B8D9; font-family:"IBM Plex Mono","Fira Code","Consolas",monospace; font-weight:800; }
+        </style>
+    </defs>
+
+    <text x="12"  y="12" class="brace" font-size="14" text-anchor="middle" dominant-baseline="middle">{c}</text>
+</svg>

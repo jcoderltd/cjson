@@ -24,10 +24,11 @@ public class Example {
         var model = models.getModelDefinitions().get(0);
         var conversation = createExampleConversation(model);
 
-        validate(conversation, "conversation/cjson-0.1.0.schema.json");
-        validate(models, "models/cjson-models-0.1.0.schema.json");
-        validate(createEmptyConversation(model), "conversation/cjson-0.1.0.schema.json");
-        validate(createMinimalEmptyConversation(), "conversation/cjson-0.1.0.schema.json");
+        var versionToUse = "0.1.0-SNAPSHOT";
+        validate(conversation, "conversation/cjson-" + versionToUse + ".schema.json");
+        validate(models, "models/cjson-models-" + versionToUse + ".schema.json");
+        validate(createEmptyConversation(model), "conversation/cjson-" + versionToUse + ".schema.json");
+        validate(createMinimalEmptyConversation(), "conversation/cjson-" + versionToUse + ".schema.json");
 
         System.out.println("Validation successful");
     }
@@ -100,12 +101,12 @@ public class Example {
         var schemasDir = "file:///" + workingDir + "/cjson-schema-0/schemas/0/";
 
         JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012, builder ->
-                builder.schemaMappers(schemaMappers -> schemaMappers.mapPrefix("https://cjson.dev/", schemasDir))
+                builder.schemaMappers(schemaMappers -> schemaMappers.mapPrefix("https://schema.cjson.dev/", schemasDir))
         );
 
         SchemaValidatorsConfig.Builder builder = SchemaValidatorsConfig.builder();
         SchemaValidatorsConfig config = builder.build();
 
-        return jsonSchemaFactory.getSchema(SchemaLocation.of("https://cjson.dev/" + resourcePath), config);
+        return jsonSchemaFactory.getSchema(SchemaLocation.of("https://schema.cjson.dev/" + resourcePath), config);
     }
 }

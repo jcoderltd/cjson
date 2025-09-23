@@ -22,7 +22,7 @@ CJSON's schema requires the following three properties as mandatory, so an empty
 {
   "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
   "mediaType": "application/vnd.cjson+json",
-  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json"
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json"
 }
 ----
 
@@ -39,7 +39,7 @@ This title is defined via the `conversationTitle` property.
   "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
   "conversationTitle": "Example Conversation",
   "mediaType": "application/vnd.cjson+json",
-  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json"
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json"
 }
 ----
 
@@ -56,7 +56,7 @@ To represent a message, we can add it to the `messages` array of the conversatio
   "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
   "conversationTitle": "Example Conversation",
   "mediaType": "application/vnd.cjson+json",
-  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json",
   "messages": [ {
     "id": "b52fb6eb-36e2-4cc4-a5d6-383bebf04c9d",
     "content": "Can you help me explain this schema?",
@@ -89,7 +89,7 @@ Once a response is received, a new message can be added to the conversation to r
   "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
   "conversationTitle": "Example Conversation",
   "mediaType": "application/vnd.cjson+json",
-  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json",
   "messages": [ {
     "id": "b52fb6eb-36e2-4cc4-a5d6-383bebf04c9d",
     "content": "Can you help me explain this schema?",

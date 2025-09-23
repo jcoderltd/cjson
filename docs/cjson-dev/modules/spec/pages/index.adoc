@@ -40,12 +40,12 @@ The CJSON schema is versioned and published at stable URLs.
 
 Example canonical locations:
 
-* `https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json`
-* `https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json`
+* `https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json`
+* `https://schema.cjson.dev/0/models/cjson-models.0.1.0.schema.json`
 
 The URLs are built with the following structure in mind:
 
-`https://cjson.dev/schema/<MAJOR_VERSION>/<MODEL_TYPE>/<SPEC_NAME>-<VERSION>.schema.json`
+`https://schema.cjson.dev/<MAJOR_VERSION>/<MODEL_TYPE>/<SPEC_NAME>-<VERSION>.schema.json`
 
 == Top-Level Structure
 
@@ -60,7 +60,7 @@ A CJSON document MUST be a JSON object that contains the elements defined in the
   "systemMessage" : "You are an expert in helping solve problems.",
   "messages" : [ ],
   "modelId" : "0c87bd41-165e-4f9d-9027-88e2c2674126",
-  "schemaUrl" : "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "schemaUrl" : "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json",
   "mediaType" : "application/vnd.cjson+json"
 }
 ----
@@ -76,17 +76,18 @@ Consumers MAY decide to join related content blocks together for UI/UX purposes.
 
 * All content SHOULD use UTF encoding compatible with the JSON specification.
 We recommend the default UTF-8.
-* Language hints MAY be attached via `meta.lang`.
+* Language hints MAY be attached via `metadata.lang`.
 
 == Security and Privacy
 
-* PII SHOULD be redacted or minimized.
-Particularly, if a Producer allows data exporting, the Producer SHOULD take precautions to avoid including PII data and security keys in their exports.
-Users SHOULD be warned about potential risks during a data export.
+* PII SHOULD be redacted or minimized during exports if requested by the user.
+Particularly, if a Producer allows data exporting, the Producer SHOULD take precautions to prevent including PII data and security keys in their exports.
+Users SHOULD be warned about potential risks during a data export and allow the user to decide if they want to proceed with the export.
 * Secret material (API keys, tokens) MUST NOT be serialized into any of the JSON specifications defined here.
 The specification provides mechanisms and suggestions for secret injection during application execution.
 This specification DOES NOT enforce a way of handling the secret injection.
-* Consider encryption at rest and access control for exported archives.
+** This restriction excludes the content of user messages or AI model responses that fall outside the control of the Producer/Application. Applications SHOULD warn users about the risks of sharing secrets (API keys, tokens, etc) inside their conversations.
+* Consider encryption at rest and access control for conversation data and exported archives.
 
 == Conformance
 
@@ -110,4 +111,4 @@ Proposals are submitted as **CJSON Improvement Proposals (CIPs)** and discussed 
 Approved changes are incorporated in scheduled future versions of the spec and schema.
 
 In many cases, for proposals that don't impact the core fields, we recommend the use of an extension first to have working examples of the change being applied.
-This helps clarify the use cases and also helps seeing how it should work which makes the decision process and discussion a lot easier.
+This helps clarify the use cases and also helps define how it should work, which makes the decision process and discussion a lot easier.

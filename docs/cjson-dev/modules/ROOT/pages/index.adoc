@@ -34,7 +34,7 @@ It includes:
 [source,json]
 ----
 {
-  "schemaUrl": "https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json",
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json",
   "conversationTitle": "Example Conversation",
   "id": "67589b87-e703-47db-8900-7533bad5465d",
   "mediaType": "application/vnd.cjson+json",

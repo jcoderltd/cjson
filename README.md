@@ -29,14 +29,14 @@ This repository contains the Java source models, a generator that produces versi
 
 Schemas are published with stable canonical IDs and SemVer:
 
-- Conversation: https://cjson.dev/schema/0/conversation/cjson-0.1.0.schema.json
-- Models: https://cjson.dev/schema/0/models/cjson-models.0.1.0.schema.json
-- Toolsets: https://cjson.dev/schema/0/toolsets/cjson-toolsets.0.1.0.schema.json
+- Conversation: https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json
+- Models: https://schema.cjson.dev/0/models/cjson-models.0.1.0.schema.json
+- Toolsets: https://schema.cjson.dev/0/toolsets/cjson-toolsets.0.1.0.schema.json
 
 General structure:
 
 ```
-https://cjson.dev/schema/<MAJOR_VERSION>/<MODEL_TYPE>/<SPEC_NAME>-<VERSION>.schema.json
+https://schema.cjson.dev/<MAJOR_VERSION>/<MODEL_TYPE>/<SPEC_NAME>-<VERSION>.schema.json
 ```
 
 Versioning policy:

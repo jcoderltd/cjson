@@ -1,0 +1,3 @@
+[submodule "published-schemas"]
+	path = published-schemas
+	url = git@github.com:jcoderltd/cjson-schemas.git
