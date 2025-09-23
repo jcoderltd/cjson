@@ -1,6 +1,6 @@
 site:
   title: CJSON
-  url: https://cjson.dev
+  url: https://docs.cjson.dev
   start_page: cjson::index.adoc
 content:
   sources:
