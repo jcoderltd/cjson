@@ -503,28 +503,32 @@
       "description" : "This represents the initial \"system\"/\"developer\" message in a conversation.\n\nDifferent providers handle the system/developer message differently. Applications MUST include this system message according to\nthe expectations of the model being invoked if the application supports given model.\n\nRefs/examples:\n* https://platform.openai.com/docs/guides/text?prompt-templates-examples=simple#message-roles-and-instruction-following\n* https://docs.anthropic.com/en/api/messages\n"
     },
     "toolOverrides" : {
-      "type" : "object",
-      "properties" : {
-        "configOverrides" : {
-          "type" : "object",
-          "additionalProperties" : true,
-          "description" : "The configuration overrides for this tool that are application specific.\n\nFor example, an application might offer a \"web content fetching\" tool that doesn't require approval for a\nuser-provided whitelist of domain names via a 'app.fetch.whitelisted' configuration value.\n",
-          "existingJavaType" : "java.util.Map<java.lang.String, java.lang.Object>"
+      "description" : "The list of tool overrides that apply to this conversation.",
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "properties" : {
+          "configOverrides" : {
+            "type" : "object",
+            "additionalProperties" : true,
+            "description" : "The configuration overrides for this tool that are application specific.\n\nFor example, an application might offer a \"web content fetching\" tool that doesn't require approval for a\nuser-provided whitelist of domain names via a 'app.fetch.whitelisted' configuration value.\n",
+            "existingJavaType" : "java.util.Map<java.lang.String, java.lang.Object>"
+          },
+          "enabled" : {
+            "type" : "boolean",
+            "description" : "Indicates if the tool is enabled/disabled in this conversation.\n\nDisabled tools should NOT be made available to the LLM models. A null value means that the application default\nfor this tool applies. Each application is free to decide how defaults are applied.\n\nApplications are encouraged to make these default values transparent to the users.\n"
+          },
+          "requiresApproval" : {
+            "type" : "boolean",
+            "description" : "Indicates if the tool requires approval before being executed.\n\nA null value means that the application default for this tool applies. Each application is free to decide how defaults are applied.\n"
+          },
+          "toolId" : {
+            "type" : "string",
+            "description" : "The id of the tool where the config is overridden."
+          }
         },
-        "enabled" : {
-          "type" : "boolean",
-          "description" : "Indicates if the tool is enabled/disabled in this conversation.\n\nDisabled tools should NOT be made available to the LLM models. A null value means that the application default\nfor this tool applies. Each application is free to decide how defaults are applied.\n\nApplications are encouraged to make these default values transparent to the users.\n"
-        },
-        "requiresApproval" : {
-          "type" : "boolean",
-          "description" : "Indicates if the tool requires approval before being executed.\n\nA null value means that the application default for this tool applies. Each application is free to decide how defaults are applied.\n"
-        },
-        "toolId" : {
-          "type" : "string",
-          "description" : "The id of the tool where the config is overridden."
-        }
-      },
-      "required" : [ "toolId" ]
+        "required" : [ "toolId" ]
+      }
     }
   },
   "required" : [ "id", "schemaUrl" ],

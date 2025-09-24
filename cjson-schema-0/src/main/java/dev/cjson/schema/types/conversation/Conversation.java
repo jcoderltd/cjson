@@ -75,7 +75,8 @@ public record Conversation(
                 """)
         String systemMessage,
 
-        ToolOverride toolOverrides,
+        @Schema(description = "The list of tool overrides that apply to this conversation.")
+        List<ToolOverride> toolOverrides,
 
         @Schema(description = "An optional audit trail that shows when the conversation was created or modified.")
         List<AuditEntry> auditTrail,
