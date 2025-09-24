@@ -27,8 +27,8 @@ Messages represent the content of the conversation.
 *Content Block*:: A discrete unit inside a conversation (e.g., text, tool call, tool result).
 *Actor*:: A subject that sends (or owns) a message in a conversation.
 For example, a user or an LLM model.
-*Producer*:: Software/application that emits CJSON.
-*Consumer*:: Software/application that ingests CJSON.
+*Producer*:: Software/application that emits CJSON data.
+*Consumer*:: Software/application that can read CJSON data.
 *Vendor*:: The owner/developer of a producer/consumer application.
 
 == Versioning
@@ -104,6 +104,10 @@ Consumers ARE NOT required to handle extensions from other providers.
 Consumers MAY want to notify users about extensions that the application doesn't recognize.
 
 Extensions MUST NOT alter the semantics of core fields.
+
+== Snapshot versions
+
+Schema versions tagged with `-SNAPSHOT` at the end of the version number are subject to change. They represent schema versions that are still in development and that have not been finalized.
 
 == Change Process
 

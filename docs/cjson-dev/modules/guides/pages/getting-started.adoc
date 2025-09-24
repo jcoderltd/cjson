@@ -66,16 +66,6 @@ To represent a message, we can add it to the `messages` array of the conversatio
 }
 ----
 
-Messages can be of two different types, `text` messages that contain a single text content, and `composite` messages that can contain multiple `contentBlocks`, useful for model responses that include tool executions and multiple model text responses in a single message.
-
-[NOTE]
-====
-Messages of type `text` are a simplified version of a `composite` message.
-In essence, they can be seen as a `composite` message with a single `text` block.
-
-The `text` messages were added to the schema to facilitate simpler use cases and improve the Developer Experience.
-====
-
 == Add the response message from the model
 
 Once a user message is sent, the application will usually send it to the corresponding AI/LLM model.
@@ -109,7 +99,16 @@ Once a response is received, a new message can be added to the conversation to r
 }
 ----
 
-For the second message we decided to use a `composite` message to show the main differences between the two types we mentioned in the previous example.
+For the second message we decided to use a `composite` message to show the main differences between the two types supported in the schema.
+
+Messages can be of type `text`, or `composite`. Composite messages can contain multiple `contentBlocks`, useful for model responses that include tool executions and multiple model text responses in a single message.
+
+[NOTE]
+====
+Messages of type `text` are a simplified version of a `composite` message. In essence, they can be seen as a `composite` message with a single `text` block.
+
+The `text` messages were added to the schema to facilitate simpler use cases and improve the Developer Experience.
+====
 
 == Validate your JSON
 

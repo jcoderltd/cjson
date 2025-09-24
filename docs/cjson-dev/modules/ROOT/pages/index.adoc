@@ -19,15 +19,20 @@ With CJSON, you can:
 * https://github.com/jcoderltd/cjson[View on GitHub]
 
 '''
+== Current Version
+
+This documentation refers to version 0.1.0-SNAPSHOT of the schema.
 
 == What is CJSON?
 
 CJSON defines a structured, vendor-neutral JSON schema for conversation data.
-It includes:
+Examples of what's included:
 
-* **Messages** – text, media, tool calls, results.
+* **Messages** – text, media attachments, tool calls and execution metadata.
 * **Metadata** – timestamps, participants, context.
-* **Streaming & patches** – optional support for incremental updates.
+* **Extensions** – define vendor-specific extensions to build on top of the schema.
+* **Tool workflows** – tool execution requests, approval blocks, and tool results.
+* **Auditing** – add audit trails to your conversations and messages.
 
 [.example]
 .A two-message example
@@ -63,11 +68,15 @@ It includes:
 
 == Why CJSON?
 
-I've been developing AI tools as a hobby-project, and everytime I'd face the same set of questions around the data modeling for the conversation data.
+I've been developing AI tools as hobby projects for the last couple of months, and everytime I'd face the same set of questions around the data modeling for the conversation data.
 
-In general, many AI tools that allow users to create chats/conversations with AI models tend to share a similar subset of elements: from the definition of the models the user wants to use/connect to, the way the conversations are presented to the user, and the definition of the tools (MCP or not) that the user wants to provide to the models.
+In general, many AI tools that allow users to create chats/conversations with AI models tend to share a similar subset of elements. For example:
 
-I wanted to have a model that would allow developers to build on-top of a shared standard and that would be portable and transparent. And wanted to be able to see my conversation data in both a web interface and an IDE – there is no reason this shouldn't be possible! Except that, I can't easily export my conversation data from one tool to the other 😅 (at least, not yet!).
+* The definition of the AI models that the user wants to use/connect to
+* The way the conversations are presented to the user, and
+* The definition of the tools (MCP or not) that the user wants to provide to the models.
+
+I wanted to have a data model that would allow developers to build on-top of a shared standard and that would be portable and transparent. And wanted to be able to see my conversation data in both a web interface and an IDE – there is no reason this shouldn't be possible! Except that, I can't easily export my conversation data from one tool to the other 😅 (at least, not yet!).
 
 CJSON started from all of the above.
 
