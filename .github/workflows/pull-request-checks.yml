@@ -1,0 +1,51 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+
+jobs:
+  pr-checks:
+    name: PR Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK 24
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '24'
+          cache: 'gradle'
+
+      - name: Generate Schemas
+        run: ./gradlew run --no-daemon --stacktrace
+
+      - name: Verify No Uncommitted Changes
+        shell: bash
+        run: |
+          echo "Checking for uncommitted changes after schema generation..."
+          if ! git diff --quiet; then
+            echo "Uncommitted changes detected (these files were modified or generated):"
+            # Log the exact files with status
+            git status --porcelain
+            echo "\nPlease review and commit the generated/updated files above."
+            exit 1
+          else
+            echo "No uncommitted changes."
+          fi
+
+      - name: Run Tests
+        run: ./gradlew test --no-daemon --stacktrace
+
+      - name: Upload Test Reports (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            **/build/reports/tests/**
+            **/build/test-results/**
+          if-no-files-found: ignore

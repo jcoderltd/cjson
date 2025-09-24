@@ -1,7 +1,10 @@
 name: Build & Deploy Antora to Pages
 on:
   push:
+    paths: [ 'antora-playbook.yml', 'docs/**' ]
     branches: [ main ]
+  workflow_dispatch:
+    
 permissions:
   contents: write
   pages: write
