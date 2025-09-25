@@ -11,17 +11,14 @@ This repository contains the Java source models, a generator that produces versi
 
 ## Modules
 
-- cjson-schema-0
-  - Java POJOs for schema version 0.x.y
-  - Generated JSON Schemas live under cjson-schema-0/schemas/0
-    - Conversation: schemas/0/conversation/cjson-0.1.0.schema.json
-    - Models: schemas/0/models/cjson-models-0.1.0.schema.json
-    - Toolsets: schemas/0/toolsets/cjson-toolsets-0.1.0.schema.json
-- cjson-schema-generator
+- `cjson-schema-0`
+  - Java POJOs for schema version `0.x.y`
+  - Generated JSON Schemas live under `cjson-schema-0/schemas/0`
+- `cjson-schema-generator`
   - Utilities to generate JSON Schemas from the Java models
-- cjson-tests
+- `cjson-tests`
   - Early examples/tests consuming the generated schemas
-- docs/cjson-dev
+- `docs/cjson-dev`
   - Antora documentation (specification, guides, landing page)
 
 
