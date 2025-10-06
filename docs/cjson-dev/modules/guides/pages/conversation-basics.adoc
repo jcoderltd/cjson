@@ -1,0 +1,209 @@
+= CJSON Conversation Basics
+:page-layout: guide
+:sectnums:
+:toc: macro
+
+toc::[]
+
+Welcome to the CJSON (**Conversation JSON**) standard!
+
+In the Getting Started guide we provided a few examples of conversations and how they start growing using messages. In this guide we'll cover additional data sets that can be stored in a Conversation.
+
+== Let's start with a two-message `Conversation`
+
+We'll begin with the last Conversation from the xref:guides:getting-started.adoc[Getting Started] guide:
+
+[.example]
+.Conversation with a user and an assistant message
+[source,json]
+----
+{
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "conversationTitle": "Example Conversation",
+  "mediaType": "application/vnd.cjson+json",
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json",
+  "messages": [ {
+    "id": "b52fb6eb-36e2-4cc4-a5d6-383bebf04c9d",
+    "content": "Can you help me explain this schema?",
+    "role": "user",
+    "messageType": "text"
+  }, {
+    "id": "0eec30fd-f5ad-4cde-94e9-b29db4553cbe",
+    "contentBlocks": [ {
+      "id": "284ef440-bf4e-4548-923e-37bb78e52c93",
+      "createdAt": "2025-09-18 20:20:14.502",
+      "text": "CJSON is an open standard for portable conversation data",
+      "blockType": "text"
+    } ],
+    "role": "assistant",
+    "messageType": "composite"
+  } ]
+}
+----
+
+== Multiple Content Blocks
+
+Composite messages can contain multiple `contentBlocks`, useful for model responses that include tool executions and multiple model text responses in a single message.
+
+An example of a message with different types of content blocks:
+
+[.example]
+.Conversation with a user and an assistant message with multiple content blocks
+[source,json]
+----
+{
+  "conversationTitle": "Example Conversation",
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "mediaType": "application/vnd.cjson+json",
+  "messages": [ {
+    "content": "Can you help me explain this schema?",
+    "id": "b52fb6eb-36e2-4cc4-a5d6-383bebf04c9d",
+    "role": "user",
+    "messageType": "text"
+  }, {
+    "contentBlocks": [ {
+      "blockType": "toolCall",
+      "args": {
+        "url": "https://docs.cjson.dev"
+      },
+      "createdAt": "2025-10-03 15:55:19.956",
+      "id": "72e15b38-1fce-453f-9a7b-c348ea7cef67",
+      "toolRef": {
+        "name": "web:fetch",
+        "toolsetId": "webtools"
+      }
+    }, {
+      "blockType": "toolResult",
+      "createdAt": "2025-10-03 15:55:19.959",
+      "id": "f306cf6a-d999-48e0-8eb3-57b514af0242",
+      "output": "...all content from the https://docs.cjson.dev website...",
+      "toolCallId": "72e15b38-1fce-453f-9a7b-c348ea7cef67",
+      "toolResultState": "succeeded"
+    }, {
+      "blockType": "text",
+      "createdAt": "2025-10-03 15:55:19.959",
+      "id": "284ef440-bf4e-4548-923e-37bb78e52c93",
+      "text": "CJSON is an open standard for portable conversation data"
+    } ],
+    "id": "0eec30fd-f5ad-4cde-94e9-b29db4553cbe",
+    "role": "assistant",
+    "messageType": "composite"
+  } ],
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json"
+}
+----
+
+== System/Developer messages
+
+Conversations can have an overarching system message provided by the developer of the application or by the user.
+
+[.example]
+.Conversation with a `systemMessage`
+[source,json]
+----
+{
+  "conversationTitle": "Example Conversation",
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "mediaType": "application/vnd.cjson+json",
+  "messages": [ ],
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json",
+  "systemMessage": "You're an expert in explaining JSON Schemas"
+}
+----
+
+== Audit trail
+
+Conversations and messages can have audit trail records. This can be useful to keep track of when a conversation was created or modified and who modified it.
+
+[.example]
+.Conversation with an audit trail
+[source,json]
+----
+{
+  "auditTrail": [ {
+    "action": "created",
+    "actorId": "user:person@email.com",
+    "timestamp": "2025-10-03 15:59:48.784"
+  } ],
+  "conversationTitle": "Example Conversation",
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "mediaType": "application/vnd.cjson+json",
+  "messages": [ ],
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json"
+}
+----
+
+Audit trail entries can be added at the Conversation or Message level. The action of each entry can be one of `created`, `updated`, `deleted` or `restored`. The last two are for systems that perform soft-deletes of the data for a period of time.
+
+An optional `changeDescription` string can be added to provide more details about the change that was performed to the resource.
+
+== Basic private/public marker and owner identification
+
+For applications that need to distinguish between applications that are private to a single user or that are public, the use of the `isPrivate` flag can be helpful:
+
+[.example]
+.Conversation with `isPrivate` set to `true`
+[source,json]
+----
+{
+  "conversationTitle": "Example Conversation",
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "isPrivate": true,
+  "mediaType": "application/vnd.cjson+json",
+  "messages": [ ],
+  "ownerId": "user:user@email.com",
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json"
+}
+----
+
+This signals that this conversation is private to the user with id `user@email.com`.
+
+[NOTE]
+In the previous examples, for user ids we've used a `user:email` syntax. Please note that this is just for example purposes – applications are free to decide how they store user/owner ids.
+
+== Metadata
+
+Conversations and messages can include a `metadata` property to specify additional details about the state of the resources and the execution details when requesting model data. For example, they can be used to store the number of tokens returned by the models.
+
+[.example]
+.Conversation with a simple metadata object
+[source,json]
+----
+{
+  "conversationTitle": "Example Conversation",
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "mediaType": "application/vnd.cjson+json",
+  "messages": [ ],
+  "metadata": {
+    "totalTokens": 123
+  },
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json"
+}
+----
+
+== Extensions
+
+Extensions allow application vendors to include additional conversation data that is not part of the CJSON specification.
+
+For example, if JCoder decided to add a feature to support shareable links to the conversations, they might want to have an application specific extension.
+
+[.example]
+.Conversation with a simple shareable link extension example
+[source,json]
+----
+{
+  "conversationTitle": "Example Conversation",
+  "extensions": {
+    "io.jcoder:shareableLink": {
+      "link": "https://c.jcoder.io/shortLinkToConvo"
+    }
+  },
+  "id": "b8bf083e-6e2c-4e20-a300-eef3c867042f",
+  "mediaType": "application/vnd.cjson+json",
+  "messages": [ ],
+  "schemaUrl": "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json"
+}
+----
+
+[WARNING]
+The specification recommends a namespacing approach to extension data as shown in the example above, using the reverse domain name of the vendor/company and the name of the extension (`vendorName:extensionName`).

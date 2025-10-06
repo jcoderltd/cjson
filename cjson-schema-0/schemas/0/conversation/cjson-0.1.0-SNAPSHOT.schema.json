@@ -532,7 +532,7 @@
     }
   },
   "required" : [ "id", "schemaUrl" ],
-  "$id" : "https://schema.cjson.dev/0/conversation/cjson-0.1.0.schema.json",
+  "$id" : "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json",
   "title" : "Conversation",
   "description" : "A conversation between an actor and a model, typically a User <-> LLM conversation.\n\nThe list of messages in the conversation should represent the \"Conversation History\" and it is not intended to represent the \"Conversation Memory\" for an LLM.\nIn this sense, think of the specification as a standard way to store \"what the user sees\" from a Conversation and think about what will help with the UI/UX for\nyour particular application.\n\nMany aspects of the specification are optional and can be used/discarded depending on the needs/requirements of each application. For example, audit trails,\nalthough recommended, are not mandatory in the specification.\n\nIt is NOT the intention of this specification to be a \"Memory Format\" representation.\n\nConversation data for \"internal-usage\" inside an application can, and SHOULD BE, different from the data used for export purposes.\n\nFor example, the ownerId can be an actual identifier inside an application, but during export, it can be the user email, a secure one-way hash of the user identifier,\nor any other identifier that makes sense during the export process. Another example is the \"metadata\" field, where it might not make sense to export \"application-specific\"\nmetadata that only makes sense to that specific application.\n\nConversation data that is essential to the conversation, and in general \"user owned\", SHOULD BE exported as verbatim as possible, for example, the conversation title\nand the message contents.\n"
 }

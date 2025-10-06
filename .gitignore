@@ -42,3 +42,5 @@ bin/
 .DS_Store
 .idea/
 /junie/
+/docs/tools/node_modules/
+/docs/tools/vendor/json-schema-static-docs/node_modules/

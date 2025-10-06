@@ -1,0 +1,345 @@
+= Toolsets
+
+|===
+|$id
+|https://schema.cjson.dev/0/toolsets/cjson-toolsets-0.1.0-SNAPSHOT.schema.json
+|$schema
+|https://json-schema.org/draft/2020-12/schema
+|===
+
+== Properties
+
+|===
+|Name |Type
+
+|#mediatype[mediaType] |String
+|#schema[schema] |String
+|#toolsets[toolsets] |Array
+|===
+
+== mediaType
+
+|===
+|Type
+|String
+|Required
+|No
+|Default
+|application/vnd.cjson-toolsets+json
+|===
+
+== schema
+
+|===
+|Type
+|String
+|Required
+|Yes
+|Default
+|https://schema.cjson.dev/0/toolsets/cjson-toolsets-0.1.0-SNAPSHOT.schema.json
+|===
+
+== toolsets
+
+|===
+|Type
+|Array
+|Required
+|No
+|===
+
+=== toolsets.extensions
+
+|===
+|Description
+|Extensions can be used to add custom application-specific data to the toolset definition. Extensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.
+|Type
+|Object
+|===
+
+=== toolsets.headers
+
+|===
+|Description
+|Additional headers to be included in the HTTP requests for "http" defined tools (mainly HTTP MCP servers). Applications are encouraged, although not enforced, to support environment variable injection into the header values. As an example, a "token" header with a "${env:MODEL_TOKEN}" would inject the value of the environment variable "MODEL_TOKEN" into the "token" header. Applications MUST NOT store plain-text credentials here and should use references to secret stores or environment variable names. For secret referencing, we recommend a "${secret:SECRET_NAME}" that is similar to the "env" case, but is up to the application to decide where they fetch the secrets from.
+|Type
+|Object
+|===
+
+=== toolsets.id
+
+|===
+|Type
+|String
+|===
+
+=== toolsets.kind
+
+|===
+|Description
+|The kind of toolset represented by this definition.
+|Type
+|String
+|Enum
+|
+|===
+
+=== toolsets.server
+
+|===
+|Description
+|Optional server connection details for MCP/remote toolsets. Applications are encouraged, although not enforced, to support environment variable injection into the server values. As an example, a "token" header with a "${env:MODEL_TOKEN}" would inject the value of the environment variable "MODEL_TOKEN" into the "token" value. Applications MUST NOT store plain-text credentials here and should use references to secret stores or environment variable names. For secret referencing, we recommend a "${secret:SECRET_NAME}" that is similar to the "env" case, but is up to the application to decide where they fetch the secrets from.
+|Type
+|Object
+|===
+
+=== toolsets.tools
+
+|===
+|Description
+|The tools that are exposed/defined by this toolset. It is the responsibility of the application to fetch the list of tools from the respective provider (e.g. MCP server) and to list them here. Part of the intention with this is to allow the user(s) to define the permissions of each tool individually. For example, for an MCP Server that provides "file system access tools", a user might want to allow all file reads inside a folder without requiring approval, but might want to require approval for any deletions.
+|Type
+|Array
+|===
+
+=== toolsets.tools.argsSchema
+
+|===
+|Description
+|JSON Schema (or schema-like) describing args; free-form object.
+|Type
+|Object
+|===
+
+=== toolsets.tools.enabled
+
+|===
+|Description
+|Whether this tool is enabled (overrides toolset.defaults.enabled).
+|Type
+|Boolean
+|Default
+|true
+|===
+
+=== toolsets.tools.examples
+
+|===
+|Description
+|Optional example payloads/usages.
+|Type
+|Array
+|===
+
+=== toolsets.tools.extensions
+
+|===
+|Description
+|Extensions can be used to add custom application-specific data to the tool definition. Extensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.
+|Type
+|Object
+|===
+
+=== toolsets.tools.name
+
+|===
+|Description
+|Unique identifier for this tool. This is the name that applications MUST send to the model as part of the tool definitions.
+|Type
+|String
+|===
+
+=== toolsets.tools.requiresApproval
+
+|===
+|Description
+|Whether this command requires approval (overrides toolset.defaults.requiresApproval).
+|Type
+|Boolean
+|Default
+|false
+|===
+
+=== toolsets.tools.summary
+
+|===
+|Description
+|A human-readable summary of this tool.
+|Type
+|String
+|===
+
+=== toolsets.toolsetDefaults
+
+|===
+|Description
+|Default flags that apply to all tools unless overridden at the tool level.
+|Type
+|Object
+|===
+
+=== toolsets.toolsetDefaults.enabled
+
+|===
+|Description
+|Whether tools are enabled by default.
+|Type
+|Boolean
+|Default
+|true
+|===
+
+=== toolsets.toolsetDefaults.requiresApproval
+
+|===
+|Description
+|Whether tools require approval by default.
+|Type
+|Boolean
+|Default
+|false
+|===
+
+=== toolsets.version
+
+|===
+|Type
+|String
+|===
+
+== Schema
+
+----
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+        "mediaType": {
+            "type": "string",
+            "default": "application/vnd.cjson-toolsets+json"
+        },
+        "schema": {
+            "type": "string",
+            "default": "https://schema.cjson.dev/0/toolsets/cjson-toolsets-0.1.0-SNAPSHOT.schema.json"
+        },
+        "toolsets": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "extensions": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Extensions can be used to add custom application-specific data to the toolset definition.\n\nExtensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.\n",
+                        "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                    },
+                    "headers": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Additional headers to be included in the HTTP requests for \"http\" defined tools (mainly HTTP MCP servers).\n\nApplications are encouraged, although not enforced, to support environment variable injection into the\nheader values.\n\nAs an example, a \"token\" header with a \"${env:MODEL_TOKEN}\" would inject the value of the environment\nvariable \"MODEL_TOKEN\" into the \"token\" header.\n\nApplications MUST NOT store plain-text credentials here and should use references to secret stores\nor environment variable names.\n\nFor secret referencing, we recommend a \"${secret:SECRET_NAME}\" that is similar to the \"env\" case, but\nis up to the application to decide where they fetch the secrets from.\n",
+                        "existingJavaType": "java.util.Map<java.lang.String, java.lang.String>"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": "string",
+                        "enum": [
+                            "builtin",
+                            "mcp",
+                            "uri"
+                        ],
+                        "description": "The kind of toolset represented by this definition."
+                    },
+                    "server": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Optional server connection details for MCP/remote toolsets.\n\nApplications are encouraged, although not enforced, to support environment variable injection into the\nserver values.\n\nAs an example, a \"token\" header with a \"${env:MODEL_TOKEN}\" would inject the value of the environment\nvariable \"MODEL_TOKEN\" into the \"token\" value.\n\nApplications MUST NOT store plain-text credentials here and should use references to secret stores\nor environment variable names.\n\nFor secret referencing, we recommend a \"${secret:SECRET_NAME}\" that is similar to the \"env\" case, but\nis up to the application to decide where they fetch the secrets from.\n",
+                        "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                    },
+                    "tools": {
+                        "description": "The tools that are exposed/defined by this toolset.\n\nIt is the responsibility of the application to fetch the list of tools from the respective provider\n(e.g. MCP server) and to list them here.\n\nPart of the intention with this is to allow the user(s) to define the permissions of each tool individually.\n\nFor example, for an MCP Server that provides \"file system access tools\", a user might want to allow all\nfile reads inside a folder without requiring approval, but might want to require approval for any deletions.\n",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "argsSchema": {
+                                    "type": "object",
+                                    "additionalProperties": true,
+                                    "description": "JSON Schema (or schema-like) describing args; free-form object.\n",
+                                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                                },
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "Whether this tool is enabled (overrides toolset.defaults.enabled).",
+                                    "default": "true"
+                                },
+                                "examples": {
+                                    "description": "Optional example payloads/usages.",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": true,
+                                        "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                                    }
+                                },
+                                "extensions": {
+                                    "type": "object",
+                                    "additionalProperties": true,
+                                    "description": "Extensions can be used to add custom application-specific data to the tool definition.\n\nExtensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.\n",
+                                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "Unique identifier for this tool.\n\nThis is the name that applications MUST send to the model as part of the tool definitions.\n"
+                                },
+                                "requiresApproval": {
+                                    "type": "boolean",
+                                    "description": "Whether this command requires approval (overrides toolset.defaults.requiresApproval).",
+                                    "default": "false"
+                                },
+                                "summary": {
+                                    "type": "string",
+                                    "description": "A human-readable summary of this tool."
+                                }
+                            },
+                            "required": [
+                                "name"
+                            ],
+                            "description": "A tool that is exposed/defined by this toolset."
+                        }
+                    },
+                    "toolsetDefaults": {
+                        "type": "object",
+                        "properties": {
+                            "enabled": {
+                                "type": "boolean",
+                                "description": "Whether tools are enabled by default.",
+                                "default": "true"
+                            },
+                            "requiresApproval": {
+                                "type": "boolean",
+                                "description": "Whether tools require approval by default.",
+                                "default": "false"
+                            }
+                        },
+                        "description": "Default flags that apply to all tools unless overridden at the tool level."
+                    },
+                    "version": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "kind"
+                ]
+            }
+        }
+    },
+    "required": [
+        "schema"
+    ],
+    "$id": "https://schema.cjson.dev/0/toolsets/cjson-toolsets-0.1.0-SNAPSHOT.schema.json",
+    "title": "Toolsets"
+}
+----
