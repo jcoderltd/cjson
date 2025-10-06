@@ -1,0 +1,19 @@
+site:
+  title: CJSON
+  url: https://docs.cjson.dev
+  start_page: cjson::index.adoc
+content:
+  sources:
+    - url: .
+      branches: HEAD
+      start_path: docs/cjson-dev
+ui:
+  bundle:
+    url: ./docs/ui-bundle/
+    snapshot: true
+runtime:
+  fetch: true
+asciidoc:
+  attributes:
+    page-pagination: ''
+    kroki-server-url: https://kroki.io

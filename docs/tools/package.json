@@ -1,0 +1,11 @@
+{
+  "name": "cjson-docs",
+  "private": true,
+  "scripts": {
+    "gen:schema-docs": "node ./generate-schema-docs.js"
+  },
+  "devDependencies": {
+    "@apidevtools/json-schema-ref-parser": "^14.2.1",
+    "json-schema-static-docs": "^0.28.1"
+  }
+}

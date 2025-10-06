@@ -1,0 +1,886 @@
+= Conversation
+
+|===
+|$id
+|https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json
+|$schema
+|https://json-schema.org/draft/2020-12/schema
+|===
+
+== Properties
+
+|===
+|Name |Type
+
+|#audittrail[auditTrail] |Array
+|#conversationtitle[conversationTitle] |String
+|#extensions[extensions] |Object
+|#id[id] |String
+|#isprivate[isPrivate] |Boolean
+|#mediatype[mediaType] |String
+|#messages[messages] |Array
+|#metadata[metadata] |Object
+|#modelid[modelId] |String
+|#ownerid[ownerId] |String
+|#parentid[parentId] |String
+|#schemaurl[schemaUrl] |String
+|#systemmessage[systemMessage] |String
+|#tooloverrides[toolOverrides] |Array
+|===
+
+== auditTrail
+
+|===
+|Description
+|An optional audit trail that shows when the conversation was created or modified.
+|Type
+|Array
+|Required
+|No
+|===
+
+=== auditTrail.action
+
+|===
+|Description
+|The type of action performed on the resource. Deleted and Restored operations are only available in systems that perform soft-deletes of the data or that provide a grace period before an entry is permanently deleted.
+|Type
+|String
+|Enum
+|
+|===
+
+=== auditTrail.actorId
+
+|===
+|Description
+|The id of the actor in the system who performed the action
+|Type
+|String
+|===
+
+=== auditTrail.changeDescription
+
+|===
+|Description
+|A description of the change
+|Type
+|String
+|===
+
+=== auditTrail.timestamp
+
+|===
+|Description
+|The timestamp of the action
+|Type
+|String
+|Format
+|date-time
+|===
+
+== conversationTitle
+
+|===
+|Description
+|The title of the conversation. This is not required and can be left blank. Many applications tend to auto-generate a suggested title based on the first user message, however this is not required.
+|Type
+|String
+|Required
+|No
+|===
+
+== extensions
+
+|===
+|Description
+|Extensions can be used to add custom application-specific data to the conversation. Extensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.
+|Type
+|Object
+|Required
+|No
+|===
+
+== id
+
+|===
+|Description
+|The unique identifier for this conversation inside the application. UUIDs/ULIDs are recommended but not enforced.
+|Type
+|String
+|Required
+|Yes
+|===
+
+== isPrivate
+
+|===
+|Description
+|Whether the conversation is marked as private or not. In general, conversations that are marked as `isPrivate = true` should only be accessibly by the user identified by `ownerId`. When exporting conversations, the user SHOULD BE prompted to confirm if private conversations should also be exported. No private conversations should be exported without the user's consent.
+|Type
+|Boolean
+|Required
+|No
+|===
+
+== mediaType
+
+|===
+|Type
+|String
+|Required
+|No
+|Default
+|application/vnd.cjson+json
+|===
+
+== messages
+
+|===
+|Description
+|The list of messages in this conversation. It can be null or empty to represent an empty conversation.
+|Type
+|Array
+|Required
+|No
+|===
+
+== metadata
+
+|===
+|Description
+|Metadata that can be used to store any additional information about the conversation.
+|Type
+|Object
+|Required
+|No
+|===
+
+== modelId
+
+|===
+|Description
+|The id of the model that this conversation is based on. When a user message is sent or when a tool execution response needs processing, this is the model that will be used for processing. This is null if the conversation doesn't have a model selected.
+|Type
+|String
+|Required
+|No
+|===
+
+== ownerId
+
+|===
+|Description
+|The id of the user that owns this conversation. Usually, but not necessarily, the user that created the conversation.
+|Type
+|String
+|Required
+|No
+|===
+
+== parentId
+
+|===
+|Description
+|The id of the parent conversation. This is null if the conversation is a top-level conversation.
+|Type
+|String
+|Required
+|No
+|===
+
+== schemaUrl
+
+|===
+|Type
+|String
+|Required
+|Yes
+|Default
+|https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json
+|===
+
+== systemMessage
+
+|===
+|Description
+|This represents the initial "system"/"developer" message in a conversation. Different providers handle the system/developer message differently. Applications MUST include this system message according to the expectations of the model being invoked if the application supports given model. Refs/examples: * https://platform.openai.com/docs/guides/text?prompt-templates-examples=simple#message-roles-and-instruction-following * https://docs.anthropic.com/en/api/messages
+|Type
+|String
+|Required
+|No
+|===
+
+== toolOverrides
+
+|===
+|Description
+|The list of tool overrides that apply to this conversation.
+|Type
+|Array
+|Required
+|No
+|===
+
+=== toolOverrides.configOverrides
+
+|===
+|Description
+|The configuration overrides for this tool that are application specific. For example, an application might offer a "web content fetching" tool that doesn't require approval for a user-provided whitelist of domain names via a 'app.fetch.whitelisted' configuration value.
+|Type
+|Object
+|===
+
+=== toolOverrides.enabled
+
+|===
+|Description
+|Indicates if the tool is enabled/disabled in this conversation. Disabled tools should NOT be made available to the LLM models. A null value means that the application default for this tool applies. Each application is free to decide how defaults are applied. Applications are encouraged to make these default values transparent to the users.
+|Type
+|Boolean
+|===
+
+=== toolOverrides.requiresApproval
+
+|===
+|Description
+|Indicates if the tool requires approval before being executed. A null value means that the application default for this tool applies. Each application is free to decide how defaults are applied.
+|Type
+|Boolean
+|===
+
+=== toolOverrides.toolId
+
+|===
+|Description
+|The id of the tool where the config is overridden.
+|Type
+|String
+|===
+
+== Schema
+
+----
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$defs": {
+        "AuditEntry": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "enum": [
+                        "created",
+                        "updated",
+                        "deleted",
+                        "restored"
+                    ],
+                    "description": "The type of action performed on the resource. Deleted and Restored operations are only available in systems that perform\nsoft-deletes of the data or that provide a grace period before an entry is permanently deleted.\n"
+                },
+                "actorId": {
+                    "type": "string",
+                    "description": "The id of the actor in the system who performed the action"
+                },
+                "changeDescription": {
+                    "type": "string",
+                    "description": "A description of the change"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The timestamp of the action"
+                }
+            },
+            "required": [
+                "action",
+                "actorId",
+                "timestamp"
+            ]
+        },
+        "CompositeMessage": {
+            "type": "object",
+            "properties": {
+                "assistantMetadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Optional metadata about the execution of the LLM/assistant model. Examples of what to add here: the model name, cost, number of input/output tokens, etc.\n\nA more typed version of this metadata will be more formally defined in future versions.\n",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "attachments": {
+                    "description": "The list of attachments that are associated with the message.\n\nThese are not treated as content blocks and SHOULD BE separate from content blocks. These SHOULD BE treated as additional context to\na model.\n\nHopefully, in a not so distant future, LLM APIs will accept parameters (like SQL Parameters) that help us prevent context injection\n(https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html).\n",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/MessageAttachment"
+                    }
+                },
+                "auditTrail": {
+                    "description": "An optional audit trail that shows when the message was created or modified.\n\nThe first entry in an audit trail SHOULD BE the CREATED operation.\n",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/AuditEntry"
+                    }
+                },
+                "contentBlocks": {
+                    "description": "The list of content blocks that make up the message. A null or empty list indicates that the message is empty.\n\nIn most cases, each message will contain a single `blockType=text` content block, for example, a User message is usually a single\ntext block that is sent for processing by the LLM.\n\nFor Assistant messages, many ContentBlocks can make up a \"single message\", for example, if there are tool execution requests,\na single message can include the results of those tool executions and the post-processing of the Assistant from those tool executions.\n",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/ContentBlock"
+                    }
+                },
+                "extensions": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Extensions can be used to add custom application-specific data to the message.\n\nExtensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.\n",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier for this message inside the application. UUIDs/ULIDs are recommended but not enforced."
+                },
+                "index": {
+                    "type": "integer",
+                    "description": "The index of the message in the conversation.\n\nThe index is optional as the order of the messages in the array can be understood/implied as the index.\n\nHowever, when a message in the conversation is \"retried\", for example, if the user wants a second take from the LLM,\nthen the index will become an useful indicator that two or more messages are meant to be displayed on the same position\nin the conversation.\n"
+                },
+                "isPreferred": {
+                    "type": "boolean",
+                    "description": "Whether the message is the preferred option to display when multiple messages share the same index in a conversation.\n\nIn general, this field has no effect if the message doesn't have an index and doesn't share the same index with other messages.\n"
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Metadata that can be used to store any additional information about the message.",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "pinned": {
+                    "type": "boolean",
+                    "description": "Used to mark messages that are pinned by users as a sign of relevance. Useful for bookmarking."
+                },
+                "role": {
+                    "$ref": "#/$defs/MessageRole",
+                    "description": "The role of the message in the conversation.\n\nDifferent providers handle this differently, however, there appears to be a recommended practice of consolidating\nall system/developer messages into a single initial message in the conversation.\n\nAs such, for \"system/developer\" messages, see the `Conversation::systemMessage` field.\n"
+                },
+                "senderId": {
+                    "type": "string",
+                    "description": "The id of the user that sent the message. This is specific to messages with \"user\" role."
+                },
+                "messageType": {
+                    "const": "composite"
+                }
+            },
+            "required": [
+                "id",
+                "role",
+                "messageType"
+            ],
+            "description": "A Message is the building unit inside a Conversation.\n\nCompositeMessages are composed of one or more \"ContentBlocks\". In general, although not mandatory, only \"assistant\"-role messages have\nmore than one \"ContentBlock\" to include/express different steps the model has taken, including, thinking blocks, tool execution requests and\nsubsequent responses after a tool has been executed.\n\nIn the same lines, in general, although not mandatory, \"user\"-role messages will have a single \"TextBlock\" that includes the text message\nprovided by the user. User messages are the ones that tend to include \"attachments\" (like audio/image files), however, applications can also\nuse attachments in \"assistant\"-role messages (for example, if the LLM generated an image, an application might want to include it as an\nattachment).\n"
+        },
+        "ContentBlock": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/TextBlock"
+                },
+                {
+                    "$ref": "#/$defs/ToolCallBlock"
+                },
+                {
+                    "$ref": "#/$defs/ToolApprovalBlock"
+                },
+                {
+                    "$ref": "#/$defs/ToolResultBlock"
+                },
+                {
+                    "$ref": "#/$defs/ThinkingBlock"
+                }
+            ]
+        },
+        "Message": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/CompositeMessage"
+                },
+                {
+                    "$ref": "#/$defs/TextMessage"
+                }
+            ]
+        },
+        "MessageAttachment": {
+            "type": "object",
+            "properties": {
+                "attachmentKind": {
+                    "type": "string",
+                    "enum": [
+                        "file",
+                        "image",
+                        "audio",
+                        "video",
+                        "link",
+                        "other"
+                    ],
+                    "description": "The kind of attachment (file/image/audio/video/link/other)."
+                },
+                "base64content": {
+                    "type": "string",
+                    "description": "The base64 encoded content of the attachment. SHOULD BE provided if uri is not provided."
+                },
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier for this attachment inside the conversation. UUIDs/ULIDs are recommended but not enforced."
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Metadata that can be used to store any additional information about the attachment.",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "mime": {
+                    "type": "string",
+                    "description": "The mime type of the attachment."
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The name of the attachment. Unique names aren't required, although are recommended inside a message\nto avoid confusions.\n"
+                },
+                "sha256": {
+                    "type": "string",
+                    "description": "The SHA-256 hash of the attachment content."
+                },
+                "sizeInBytes": {
+                    "type": "integer",
+                    "description": "The size of the attachment in bytes."
+                },
+                "uri": {
+                    "type": "string",
+                    "description": "The URI of the attachment. SHOULD BE provided if base64content is not provided directly."
+                }
+            },
+            "required": [
+                "attachmentKind",
+                "id",
+                "name"
+            ]
+        },
+        "MessageRole": {
+            "type": "string",
+            "enum": [
+                "user",
+                "assistant",
+                "tool"
+            ]
+        },
+        "TextBlock": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier of this text block in the conversation. UUIDs/ULIDs are recommended but not enforced."
+                },
+                "isStreaming": {
+                    "type": "boolean",
+                    "description": "Whether the text block is streaming or not. This is useful to signal a text block that is still in the process of\nbeing generated by the model via a Streaming API.\n"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "The text of the message."
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "blockType": {
+                    "const": "text"
+                }
+            },
+            "required": [
+                "createdAt",
+                "id",
+                "text",
+                "blockType"
+            ]
+        },
+        "TextMessage": {
+            "type": "object",
+            "properties": {
+                "assistantMetadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Optional metadata about the execution of the LLM/assistant model. Examples of what to add here: the model name, cost, number of input/output tokens, etc.\n\nA more typed version of this metadata will be more formally defined in future versions.\n",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "attachments": {
+                    "description": "The list of attachments that are associated with the message.\n\nThese are not treated as content blocks and SHOULD BE separate from content blocks. These SHOULD BE treated as additional context to\na model.\n\nHopefully, in a not so distant future, LLM APIs will accept parameters (like SQL Parameters) that help us prevent context injection\n(https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html).\n",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/MessageAttachment"
+                    }
+                },
+                "auditTrail": {
+                    "description": "An optional audit trail that shows when the message was created or modified.\n\nThe first entry in an audit trail SHOULD BE the CREATED operation.\n",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/AuditEntry"
+                    }
+                },
+                "content": {
+                    "type": "string",
+                    "description": "The text content of the message."
+                },
+                "extensions": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Extensions can be used to add custom application-specific data to the message.\n\nExtensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.\n",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier for this message inside the application. UUIDs/ULIDs are recommended but not enforced."
+                },
+                "index": {
+                    "type": "integer",
+                    "description": "The index of the message in the conversation.\n\nThe index is optional as the order of the messages in the array can be understood/implied as the index.\n\nHowever, when a message in the conversation is \"retried\", for example, if the user wants a second take from the LLM,\nthen the index will become an useful indicator that two or more messages are meant to be displayed on the same position\nin the conversation.\n"
+                },
+                "isPreferred": {
+                    "type": "boolean",
+                    "description": "Whether the message is the preferred option to display when multiple messages share the same index in a conversation.\n\nIn general, this field has no effect if the message doesn't have an index and doesn't share the same index with other messages.\n"
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Metadata that can be used to store any additional information about the message.",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "pinned": {
+                    "type": "boolean",
+                    "description": "Used to mark messages that are pinned by users as a sign of relevance. Useful for bookmarking."
+                },
+                "role": {
+                    "$ref": "#/$defs/MessageRole",
+                    "description": "The role of the message in the conversation.\n\nDifferent providers handle this differently, however, there appears to be a recommended practice of consolidating\nall system/developer messages into a single initial message in the conversation.\n\nAs such, for \"system/developer\" messages, see the `Conversation::systemMessage` field.\n"
+                },
+                "senderId": {
+                    "type": "string",
+                    "description": "The id of the user that sent the message. This is specific to messages with \"user\" role."
+                },
+                "messageType": {
+                    "const": "text"
+                }
+            },
+            "required": [
+                "id",
+                "role",
+                "messageType"
+            ],
+            "description": "A Message is the building unit inside a Conversation.\n\nTextMessages represent the most basic type of message in a conversation, represented by a block of text. They are\nequivalent to a CompositeMessage that contains a single TextBlock inside of it.\n"
+        },
+        "ThinkingBlock": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier of this thinking block in the conversation. UUIDs/ULIDs are recommended but not enforced."
+                },
+                "isStreaming": {
+                    "type": "boolean",
+                    "description": "Whether the thinking block is streaming or not. This is useful to signal a block that is still in the process of\nbeing generated by the model via a Streaming API.\n"
+                },
+                "text": {
+                    "type": "string",
+                    "description": "The text of the message."
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "blockType": {
+                    "const": "thinking"
+                }
+            },
+            "required": [
+                "createdAt",
+                "id",
+                "text",
+                "blockType"
+            ]
+        },
+        "ToolApprovalBlock": {
+            "type": "object",
+            "properties": {
+                "approvedBy": {
+                    "type": "string",
+                    "description": "The id of the user that approved the tool call."
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier of this tool approval block in the conversation. UUIDs/ULIDs are recommended but not enforced."
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "The optional reason the tool call was approved/rejected/canceled."
+                },
+                "toolApprovalState": {
+                    "type": "string",
+                    "enum": [
+                        "approved",
+                        "rejected",
+                        "canceled"
+                    ],
+                    "description": "The approval state provided by the user."
+                },
+                "toolCallId": {
+                    "type": "string",
+                    "description": "The unique identifier of the tool call this tool approval block is associated with."
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "blockType": {
+                    "const": "toolApproval"
+                }
+            },
+            "required": [
+                "createdAt",
+                "id",
+                "toolApprovalState",
+                "toolCallId",
+                "blockType"
+            ]
+        },
+        "ToolCallBlock": {
+            "type": "object",
+            "properties": {
+                "args": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "The arguments that the LLM is requesting to be passed to the tool",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier of this tool approval block in the conversation. UUIDs/ULIDs are recommended but not enforced."
+                },
+                "requiresApproval": {
+                    "type": "boolean",
+                    "description": "Indicates if the tool call requires user-approval before execution.\n\nThis is driven by the tool configuration in the application and by any tool overrides specific to this\nconversation.\n"
+                },
+                "toolRef": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "The name of the tool to be called."
+                        },
+                        "toolsetId": {
+                            "type": "string",
+                            "description": "The id of the toolset that defines the provided tool name.\n\nAlthough optional, it is recommended to ensure correct traceability from the tool that was requested\nto the toolset that provides it. A \"toolset\" can be locally defined tools by the application, or tools\nprovided by an MCP server.\n\nNote: Toolsets are defined in a separate `cjson-toolset` schema.\n"
+                        },
+                        "version": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name"
+                    ],
+                    "description": "The tool that the LLM is requesting to be executed"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "blockType": {
+                    "const": "toolCall"
+                }
+            },
+            "required": [
+                "createdAt",
+                "id",
+                "toolRef",
+                "blockType"
+            ],
+            "description": "A \"Tool Call\" block represents a request by the LLM to execute a tool (e.g. provided via an MCP or via the application).\n\nTool calls are supported by some models and different applications can add \"user-mediated tool execution\" to their flows\nto reduce the risk of data loss or other unwanted consequences. If user mediation is required, you can make use of the\nToolApprovalBlock to represent whether a tool call was approved or not inside a flow.\n\nIf a tool call doesn't require approval or if it was approved by a user, then the result of such tool execution can be\nrepresented as a ToolResultBlock.\n"
+        },
+        "ToolResultBlock": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "durationMs": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier of this tool result block in the conversation. UUIDs/ULIDs are recommended but not enforced."
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Metadata that can be used to store any additional information about the execution of the tool.\n",
+                    "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                },
+                "output": {
+                    "description": "The output of the tool execution.\n\nApplications SHOULD use this output feeding the tool execution result into the models.\n"
+                },
+                "toolCallId": {
+                    "type": "string",
+                    "description": "The id of the tool call this tool result block is associated with."
+                },
+                "toolResultError": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "type": "string"
+                        },
+                        "data": {},
+                        "message": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "toolResultState": {
+                    "type": "string",
+                    "enum": [
+                        "succeeded",
+                        "failed",
+                        "timed_out",
+                        "canceled"
+                    ],
+                    "description": "The result of the tool execution"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "blockType": {
+                    "const": "toolResult"
+                }
+            },
+            "required": [
+                "createdAt",
+                "id",
+                "toolCallId",
+                "toolResultState",
+                "blockType"
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "auditTrail": {
+            "description": "An optional audit trail that shows when the conversation was created or modified.",
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/AuditEntry"
+            }
+        },
+        "conversationTitle": {
+            "type": "string",
+            "description": "The title of the conversation. This is not required and can be left blank.\n\nMany applications tend to auto-generate a suggested title based on the first user message, however this is not required.\n"
+        },
+        "extensions": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Extensions can be used to add custom application-specific data to the conversation.\n\nExtensions can be later adopted as first-class citizens of the CJSON model if they are general enough and cover a common use-case.\n",
+            "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+        },
+        "id": {
+            "type": "string",
+            "description": "The unique identifier for this conversation inside the application. UUIDs/ULIDs are recommended but not enforced."
+        },
+        "isPrivate": {
+            "type": "boolean",
+            "description": "Whether the conversation is marked as private or not.\n\nIn general, conversations that are marked as `isPrivate = true` should only be accessibly by the user identified by `ownerId`.\n\nWhen exporting conversations, the user SHOULD BE prompted to confirm if private conversations should also be exported.\nNo private conversations should be exported without the user's consent.\n"
+        },
+        "mediaType": {
+            "type": "string",
+            "default": "application/vnd.cjson+json"
+        },
+        "messages": {
+            "description": "The list of messages in this conversation. It can be null or empty to represent an empty conversation.",
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/Message"
+            }
+        },
+        "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Metadata that can be used to store any additional information about the conversation.",
+            "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+        },
+        "modelId": {
+            "type": "string",
+            "description": "The id of the model that this conversation is based on.\n\nWhen a user message is sent or when a tool execution response needs processing, this is the model that will be used for processing.\n\nThis is null if the conversation doesn't have a model selected.\n"
+        },
+        "ownerId": {
+            "type": "string",
+            "description": "The id of the user that owns this conversation. Usually, but not necessarily, the user that created the conversation."
+        },
+        "parentId": {
+            "type": "string",
+            "description": "The id of the parent conversation. This is null if the conversation is a top-level conversation."
+        },
+        "schemaUrl": {
+            "type": "string",
+            "default": "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json"
+        },
+        "systemMessage": {
+            "type": "string",
+            "description": "This represents the initial \"system\"/\"developer\" message in a conversation.\n\nDifferent providers handle the system/developer message differently. Applications MUST include this system message according to\nthe expectations of the model being invoked if the application supports given model.\n\nRefs/examples:\n* https://platform.openai.com/docs/guides/text?prompt-templates-examples=simple#message-roles-and-instruction-following\n* https://docs.anthropic.com/en/api/messages\n"
+        },
+        "toolOverrides": {
+            "description": "The list of tool overrides that apply to this conversation.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "configOverrides": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "The configuration overrides for this tool that are application specific.\n\nFor example, an application might offer a \"web content fetching\" tool that doesn't require approval for a\nuser-provided whitelist of domain names via a 'app.fetch.whitelisted' configuration value.\n",
+                        "existingJavaType": "java.util.Map<java.lang.String, java.lang.Object>"
+                    },
+                    "enabled": {
+                        "type": "boolean",
+                        "description": "Indicates if the tool is enabled/disabled in this conversation.\n\nDisabled tools should NOT be made available to the LLM models. A null value means that the application default\nfor this tool applies. Each application is free to decide how defaults are applied.\n\nApplications are encouraged to make these default values transparent to the users.\n"
+                    },
+                    "requiresApproval": {
+                        "type": "boolean",
+                        "description": "Indicates if the tool requires approval before being executed.\n\nA null value means that the application default for this tool applies. Each application is free to decide how defaults are applied.\n"
+                    },
+                    "toolId": {
+                        "type": "string",
+                        "description": "The id of the tool where the config is overridden."
+                    }
+                },
+                "required": [
+                    "toolId"
+                ]
+            }
+        }
+    },
+    "required": [
+        "id",
+        "schemaUrl"
+    ],
+    "$id": "https://schema.cjson.dev/0/conversation/cjson-0.1.0-SNAPSHOT.schema.json",
+    "title": "Conversation",
+    "description": "A conversation between an actor and a model, typically a User <-> LLM conversation.\n\nThe list of messages in the conversation should represent the \"Conversation History\" and it is not intended to represent the \"Conversation Memory\" for an LLM.\nIn this sense, think of the specification as a standard way to store \"what the user sees\" from a Conversation and think about what will help with the UI/UX for\nyour particular application.\n\nMany aspects of the specification are optional and can be used/discarded depending on the needs/requirements of each application. For example, audit trails,\nalthough recommended, are not mandatory in the specification.\n\nIt is NOT the intention of this specification to be a \"Memory Format\" representation.\n\nConversation data for \"internal-usage\" inside an application can, and SHOULD BE, different from the data used for export purposes.\n\nFor example, the ownerId can be an actual identifier inside an application, but during export, it can be the user email, a secure one-way hash of the user identifier,\nor any other identifier that makes sense during the export process. Another example is the \"metadata\" field, where it might not make sense to export \"application-specific\"\nmetadata that only makes sense to that specific application.\n\nConversation data that is essential to the conversation, and in general \"user owned\", SHOULD BE exported as verbatim as possible, for example, the conversation title\nand the message contents.\n"
+}
+----

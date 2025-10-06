@@ -9,7 +9,7 @@ import java.util.List;
 @Schema(title = "Toolsets")
 public record Toolsets(
 
-        @Schema(defaultValue = "https://schema.cjson.dev/0/toolsets/cjson-toolsets." + Version.VERSION + ".schema.json")
+        @Schema(defaultValue = "https://schema.cjson.dev/0/toolsets/cjson-toolsets-" + Version.VERSION + ".schema.json")
         @NotNull String schema,
 
         @Schema(defaultValue = "application/vnd.cjson-toolsets+json")

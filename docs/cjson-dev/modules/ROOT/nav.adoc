@@ -1,5 +1,9 @@
 * xref:index.adoc[Home]
 * Specification
 ** xref:spec:index.adoc[Overview]
+** xref:reference:schema-docs/0/conversation/cjson-0.1.0-SNAPSHOT.schema.adoc[Conversation Spec]
+** xref:reference:schema-docs/0/models/cjson-models-0.1.0-SNAPSHOT.schema.adoc[Models Spec]
+** xref:reference:schema-docs/0/toolsets/cjson-toolsets-0.1.0-SNAPSHOT.schema.adoc[Toolsets Spec]
 * Guides
 ** xref:guides:getting-started.adoc[Getting Started]
+** xref:guides:conversation-basics.adoc[Conversation Basics]

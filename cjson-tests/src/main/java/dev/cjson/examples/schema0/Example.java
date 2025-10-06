@@ -96,7 +96,7 @@ public class Example {
         return UUID.randomUUID().toString();
     }
 
-    private static JsonSchema loadSchema(String resourcePath) {
+    static JsonSchema loadSchema(String resourcePath) {
         var workingDir = Paths.get("").toAbsolutePath().toString().replace('\\', '/');
         var schemasDir = "file:///" + workingDir + "/cjson-schema-0/schemas/0/";
 

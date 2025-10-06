@@ -1,3 +1,6 @@
+import dev.cjson.docs.Markdown2AsciiDoc
+import org.apache.tools.ant.taskdefs.condition.Os
+
 plugins {
     id 'java-library'
 }
@@ -27,4 +30,49 @@ subprojects {
     test {
         useJUnitPlatform()
     }
+}
+
+def npmCmd = Os.isFamily(Os.FAMILY_WINDOWS) ? "npm.cmd" : "npm"
+
+tasks.register('generateSchemaDocs') {
+    group = 'documentation'
+    description = 'Generate human-friendly docs from JSON Schemas'
+
+    doFirst {
+        logger.info("running npm install...")
+        def o = providers.exec {
+            workingDir = file("$projectDir/docs/tools")
+            commandLine "${npmCmd}", "install", "--no-audit", "--no-fund"
+        }
+        println(o.standardOutput.asText.get())
+        println(o.standardError.asText.get())
+    }
+    doLast {
+        logger.info("running npm run gen:schema-docs...")
+        def o = providers.exec {
+            workingDir = file("$projectDir/docs/tools")
+            commandLine "${npmCmd}", "run", "gen:schema-docs"
+        }
+        println(o.standardOutput.asText.get())
+        println(o.standardError.asText.get())
+    }
+    doLast {
+        logger.info("converting markdown to asciidoc...")
+        def inputDir = layout.projectDirectory.dir("/docs/cjson-dev/modules/reference/pages/schema-docs")
+        fileTree(inputDir).matching { include '**/*.md' }.files.each { File md ->
+            def path = md.toPath().toString()
+            def outFile = file(path.replaceAll('\\.md', '.adoc'))
+
+            def mdText = md.getText('UTF-8')
+            def adocText = Markdown2AsciiDoc.convertMarkdown(mdText)
+            outFile.setText(adocText, 'UTF-8')
+            md.delete()
+        }
+    }
+
+    dependsOn(':cjson-schema-generator:run')
+}
+
+tasks.register('run') {
+    dependsOn('generateSchemaDocs', ':cjson-schema-generator:run')
 }

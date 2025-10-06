@@ -44,7 +44,7 @@ Versioning policy:
 
 ## CJSON Examples
 
-Check the Getting Started guide in the documentation page.
+Check the [Getting Started](https://docs.cjson.dev/cjson/0.1.0-SNAPSHOT/guides/getting-started.html) guide in the documentation page.
 
 ## Security and Privacy Notes
 
