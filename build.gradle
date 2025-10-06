@@ -66,6 +66,7 @@ tasks.register('generateSchemaDocs') {
             def mdText = md.getText('UTF-8')
             def adocText = Markdown2AsciiDoc.convertMarkdown(mdText)
             outFile.setText(adocText, 'UTF-8')
+            md.delete()
         }
     }
 
